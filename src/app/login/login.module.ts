@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LandingPageComponent } from './landing-page/landing-page.component';
+import { LoginPageComponent } from './login-page/login-page.component';
 
 
 
 @NgModule({
   declarations: [
-    LandingPageComponent
+    LoginPageComponent
   ],
   imports: [
     CommonModule
   ]
 })
-export class LandingModule { }
+export class LoginModule { }

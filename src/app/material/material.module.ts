@@ -4,8 +4,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
-  imports: [MatToolbarModule],
-  exports: [MatToolbarModule],
+  imports: [MatToolbarModule, MatToolbarModule],
+  exports: [MatToolbarModule, MatToolbarModule],
   // providers: [MdIconRegistry],
 })
 export class MaterialModule {}

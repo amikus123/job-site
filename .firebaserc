@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "job-site-dc6be": {
+      "hosting": {
+        "job-site": [
+          "job-site-dc6be"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "job-site-dc6be"
+  }
+}
