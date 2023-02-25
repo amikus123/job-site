@@ -1,3 +1,4 @@
+import { JobListModule } from './job-list/job-list.module';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
@@ -9,9 +10,10 @@ import { TestComponent } from './test/test.component';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { SharedModule } from './shared/shared.module';
 import { LayoutModule } from './layout/layout.module';
-import { MaterialModule } from './material/material.module';
+import { JobModule } from './job/job.module';
+import { LoginPageModule } from './login/login-page/login-page.module';
+import { PERSISTENCE } from '@angular/fire/compat/auth';
 
 @NgModule({
   declarations: [AppComponent, TestComponent],
@@ -24,11 +26,15 @@ import { MaterialModule } from './material/material.module';
     BrowserAnimationsModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    SharedModule,
-    MaterialModule,
     LayoutModule,
+    JobModule,
+    LoginPageModule,
+    JobListModule,
   ],
-  providers: [{ provide: FIREBASE_OPTIONS, useValue: environment.firebase }],
+  providers: [
+    { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
+    { provide: PERSISTENCE, useValue: 'local' },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
