@@ -1,3 +1,4 @@
+import { SharedModule } from 'src/app/shared/shared.module';
 import { JobListModule } from './job-list/job-list.module';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -30,6 +31,7 @@ import { PERSISTENCE } from '@angular/fire/compat/auth';
     JobModule,
     LoginPageModule,
     JobListModule,
+    SharedModule,
   ],
   providers: [
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },

@@ -39,7 +39,10 @@ const routes: Routes = [
     title: 'Job Site - Employer Login',
     canActivate: [NotAuthGuard],
   },
-
+  {
+    path: 'job-applications',
+    component: EmployerLoginComponent,
+  },
   {
     path: '',
     component: LandingPageComponent,

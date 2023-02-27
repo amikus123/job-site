@@ -1,22 +1,45 @@
 <mat-toolbar>
-  <mat-toolbar-row>
-    <span>Job Site</span>
-    <span class="example-spacer"></span>
-    <div *ngIf="loggedIn; then logOut; else googleButton"></div>
-    <ng-template #googleButton>
-      <button mat-raised-button (click)="googleLogin()">
-        Google Login
+  <mat-toolbar-row class="row">
+    <h1 class="mat-1">
+      <a [routerLink]="['/']"> Job Site </a>
+    </h1>
+
+    <ul>
+      <li *ngFor="let link of links">
+        <a class="mat-h2" [routerLink]="[link.href]">{{ link.text }}</a>
+      </li>
+      <ng-container *ngIf="isEmployer">
+        <li *ngFor="let link of employeeLinks">
+          <a class="mat-h2" [routerLink]="[link.href]">{{ link.text }}</a>
+        </li>
+      </ng-container>
+      <ng-container *ngIf="isEmployee">
+        <li *ngFor="let link of employerLinks">
+          <a class="mat-h2" [routerLink]="[link.href]">{{ link.text }}</a>
+        </li>
+      </ng-container>
+    </ul>
+    <span class="spacer"></span>
+    <div *ngIf="isLoggedIn; then logOut; else login"></div>
+
+    <ng-template #login>
+      <button class="loginButton" mat-button [matMenuTriggerFor]="menu">
+        <span> Login </span>
         <mat-icon
           aria-hidden="false"
           aria-label="Example home icon"
           fontIcon="login"
         ></mat-icon>
       </button>
+      <mat-menu #menu="matMenu">
+        <a [routerLink]="['/employer-login']" mat-menu-item>Employer</a>
+        <a [routerLink]="['/employee-login']" mat-menu-item>Employee</a>
+      </mat-menu>
     </ng-template>
 
     <ng-template #logOut>
-      <button mat-raised-button (click)="signOut()">
-        Signout
+      <button mat-button (click)="signOut()">
+        <span> Logout </span>
         <mat-icon
           aria-hidden="false"
           aria-label="Example home icon"
@@ -27,8 +50,8 @@
   </mat-toolbar-row>
 
   <mat-toolbar-row>
-    {{ auth.isEmployee ? "is employee" : "not employee" }}
-    {{ auth.isEmployer ? "is employer" : "not employer" }}
-    {{ auth.isLoggedIn ? "is auth" : "not auth" }}
+    {{ isEmployee ? "is employee" : "not employee" }}
+    {{ isEmployer ? "is employer" : "not employer" }}
+    {{ isLoggedIn ? "is auth" : "not auth" }}
   </mat-toolbar-row>
 </mat-toolbar>

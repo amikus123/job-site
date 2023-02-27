@@ -1,0 +1,26 @@
+.loginButton {
+  font-size: 1.125rem;
+  // margin-right: 1rem;
+}
+.spacer {
+  flex: 1 1 auto;
+}
+
+.mat-1,
+.mat-1 a {
+  margin: 0;
+}
+
+ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+
+  a {
+    font-weight: 400;
+  }
+}
+a {
+  text-decoration: none;
+  color: black;
+}
