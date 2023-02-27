@@ -1,13 +1,18 @@
-import { AuthService } from './../../services/auth/auth.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 interface Link {
   text: string;
   href: string;
   icon: string;
 }
+
 @Component({
   selector: 'app-navbar',
+  standalone: true,
+  imports: [CommonModule, SharedModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
 })
@@ -32,10 +37,4 @@ export class NavbarComponent {
     console.log('!!!');
     this.auth.signOut();
   }
-  centered = false;
-  disabled = false;
-  unbounded = false;
-
-  radius: number | undefined;
-  color: string | undefined;
 }

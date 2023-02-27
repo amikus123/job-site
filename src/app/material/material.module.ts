@@ -37,7 +37,6 @@ import { LayoutModule } from '@angular/cdk/layout';
 @NgModule({
   declarations: [],
   imports: [
-    BrowserAnimationsModule,
     MatCheckboxModule,
     MatCheckboxModule,
     MatButtonModule,
@@ -74,7 +73,6 @@ import { LayoutModule } from '@angular/cdk/layout';
     LayoutModule,
   ],
   exports: [
-    BrowserAnimationsModule,
     MatCheckboxModule,
     MatCheckboxModule,
     MatButtonModule,

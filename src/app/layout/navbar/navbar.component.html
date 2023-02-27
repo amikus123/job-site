@@ -1,6 +1,6 @@
-<mat-toolbar>
+<mat-toolbar color="primary">
   <mat-toolbar-row class="row">
-    <h1 class="mat-1">
+    <h1 matRipple class="mat-1">
       <a [routerLink]="['/']"> Job Site </a>
     </h1>
 
@@ -95,9 +95,9 @@
     </ng-template>
   </mat-toolbar-row>
 
-  <mat-toolbar-row>
+  <!-- <mat-toolbar-row>
     {{ isEmployee ? "is employee" : "not employee" }}
     {{ isEmployer ? "is employer" : "not employer" }}
     {{ isLoggedIn ? "is auth" : "not auth" }}
-  </mat-toolbar-row>
+  </mat-toolbar-row> -->
 </mat-toolbar>

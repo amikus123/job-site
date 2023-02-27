@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
+import { MaterialModule } from '../material/material.module';
 import { AuthService } from '../services/auth/auth.service';
 
 @Component({
   selector: 'app-employee-login',
   standalone: true,
+  imports: [MaterialModule],
   templateUrl: './employee-login.component.html',
   styleUrls: ['./employee-login.component.scss'],
 })

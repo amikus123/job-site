@@ -1,8 +1,8 @@
+import { FooterComponent } from './layout/footer/footer.component';
+import { NavbarComponent } from './layout/navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { JobListModule } from './job-list/job-list.module';
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
@@ -12,10 +12,8 @@ import { TestComponent } from './test/test.component';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LayoutModule } from './layout/layout.module';
-import { JobModule } from './job/job.module';
-import { LoginPageModule } from './login/login-page/login-page.module';
 import { PERSISTENCE } from '@angular/fire/compat/auth';
+import { BrowserModule } from '@angular/platform-browser';
 
 @NgModule({
   declarations: [AppComponent, TestComponent],
@@ -24,16 +22,12 @@ import { PERSISTENCE } from '@angular/fire/compat/auth';
     CommonModule,
     AppRoutingModule,
     AngularFireAuthModule,
-    AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     BrowserAnimationsModule,
-    BrowserAnimationsModule,
+    AngularFirestoreModule,
     AppRoutingModule,
-    LayoutModule,
-    JobModule,
-    LoginPageModule,
-    JobListModule,
-    SharedModule,
+    NavbarComponent,
+    FooterComponent,
   ],
   providers: [
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
