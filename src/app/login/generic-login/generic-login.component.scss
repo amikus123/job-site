@@ -1,0 +1,17 @@
+.example-card {
+  display: flex;
+  justify-content: space-between;
+  margin: 2rem auto;
+  max-width: 500px;
+}
+
+mat-card-subtitle {
+  margin-bottom: 0.5rem;
+}
+.example-full-width {
+  width: 100%;
+}
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+}
