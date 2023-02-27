@@ -1,5 +1,34 @@
 <mat-toolbar>
   <mat-toolbar-row>
-    <span>First Row</span>
+    <span>Job Site</span>
+    <span class="example-spacer"></span>
+    <div *ngIf="loggedIn; then logOut; else googleButton"></div>
+    <ng-template #googleButton>
+      <button mat-raised-button (click)="googleLogin()">
+        Google Login
+        <mat-icon
+          aria-hidden="false"
+          aria-label="Example home icon"
+          fontIcon="login"
+        ></mat-icon>
+      </button>
+    </ng-template>
+
+    <ng-template #logOut>
+      <button mat-raised-button (click)="signOut()">
+        Signout
+        <mat-icon
+          aria-hidden="false"
+          aria-label="Example home icon"
+          fontIcon="logout"
+        ></mat-icon>
+      </button>
+    </ng-template>
+  </mat-toolbar-row>
+
+  <mat-toolbar-row>
+    {{ auth.isEmployee ? "is employee" : "not employee" }}
+    {{ auth.isEmployer ? "is employer" : "not employer" }}
+    {{ auth.isLoggedIn ? "is auth" : "not auth" }}
   </mat-toolbar-row>
 </mat-toolbar>

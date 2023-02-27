@@ -1,117 +1,157 @@
-import { map, Observable } from 'rxjs';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { Injectable, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import firebase from 'firebase/compat/app';
+import { User, Employee, Employer } from './auth';
+import { Injectable } from '@angular/core';
+import * as auth from 'firebase/auth';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 import {
+  Action,
   AngularFirestore,
   AngularFirestoreDocument,
+  DocumentSnapshot,
 } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
-import { User } from './auth';
+interface CustomFirebaseUser extends firebase.User {
+  isEmployer: boolean;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  userData: any;
-  user$: any;
+  // firebase object
+  firebaseUser: CustomFirebaseUser | null = null;
+  // user from db
+  user: Observable<Action<DocumentSnapshot<Employer | Employee>>> | null = null;
+
   constructor(
-    private afs: AngularFirestore, // Inject Firestore service
-    private afAuth: AngularFireAuth, // Inject Firebase auth service
-    public router: Router
+    private firestore: AngularFirestore,
+    private fireAuth: AngularFireAuth,
+    private router: Router
   ) {
-    const a = this.afAuth.currentUser.then((a) => {
-      console.log(a);
-      return a;
-    });
-    console.log(a);
-
-    this.afAuth.authState.subscribe((user) => {
-      if (user) {
-        this.userData = user;
-      }
-    });
+    // read local store
   }
 
-  async loginEmail(email: string, password: string) {
+  setUserLocalData(user: firebase.User | null, isEmployerLogin: boolean) {
+    if (user) {
+      const customUser = { ...user, isEmployer: isEmployerLogin };
+      this.firebaseUser = customUser;
+      localStorage.setItem('user', JSON.stringify(customUser));
+      this.user = this.firestore
+        .doc<Employer | Employee>(`users/${user.uid}`)
+        .snapshotChanges();
+    } else {
+      localStorage.setItem('user', 'null');
+    }
+    JSON.parse(localStorage.getItem('user')!);
+    this.router.navigate(['']);
+  }
+
+  // EMAIL
+  async signUp(email: string, password: string, isEmployerLogin: boolean) {
     try {
-      const result = await this.afAuth.signInWithEmailAndPassword(
+      const { user } = await this.fireAuth.createUserWithEmailAndPassword(
         email,
         password
       );
-      this.setUserData(result.user);
-      this.afAuth.authState.subscribe((user_1) => {
-        if (user_1) {
-          this.router.navigate(['dashboard']);
-        }
+      this.setUserData(user as firebase.User, isEmployerLogin);
+      this.setUserLocalData(user, isEmployerLogin);
+    } catch (error: any) {
+      console.error(error);
+    }
+  }
+
+  async signIn(email: string, password: string, isEmployerLogin: boolean) {
+    try {
+      const { user } = await this.fireAuth.signInWithEmailAndPassword(
+        email,
+        password
+      );
+      this.setUserData(user as firebase.User, isEmployerLogin);
+      this.setUserLocalData(user, isEmployerLogin);
+    } catch (error: any) {
+      console.error(error);
+    }
+  }
+
+  // GOOGLE
+  async googleAuth(isEmployerLogin: boolean) {
+    const user = await this.authLogin(isEmployerLogin);
+    if (user) {
+      this.setUserLocalData(user, isEmployerLogin);
+    } else {
+      console.error('NO USER');
+    }
+  }
+  async authLogin(isEmployerLogin: boolean) {
+    try {
+      const { user } = await this.fireAuth.signInWithPopup(
+        new auth.GoogleAuthProvider()
+      );
+      this.setUserData(user as firebase.User, isEmployerLogin);
+      this.router.navigate(['']);
+      return user;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+
+  get isLoggedIn(): boolean {
+    const user: CustomFirebaseUser | null =
+      JSON.parse(localStorage.getItem('user') || '') || this.firebaseUser;
+    return !!user;
+  }
+  get isEmployee(): boolean {
+    const user: CustomFirebaseUser | null =
+      JSON.parse(localStorage.getItem('user') || '') || this.firebaseUser;
+    return !!user && !user?.isEmployer;
+  }
+  get isEmployer(): boolean {
+    const user: CustomFirebaseUser | null =
+      JSON.parse(localStorage.getItem('user') || '') || this.firebaseUser;
+    return user?.isEmployer || false;
+  }
+
+  /* Setting up user data when sign in with username/password, 
+  sign up with username/password and sign in with social auth  
+  provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
+  setUserData(user: firebase.User, isEmployerLogin: boolean) {
+    const userRef: AngularFirestoreDocument<any> = this.firestore.doc(
+      `users/${user.uid}`
+    );
+    const userBase: User = {
+      uid: user.uid,
+      email: user.email as string,
+      displayName: user.displayName as string,
+      photoURL: user.photoURL as string,
+    };
+
+    if (isEmployerLogin) {
+      const employerData: Employer = { ...userBase, isEmployer: true };
+      return userRef.set(employerData, {
+        merge: true,
       });
-    } catch (error: any) {
-      window.alert(error.message);
+    } else {
+      const employerData: Employee = { ...userBase, isEmployer: false };
+      return userRef.set(employerData, {
+        merge: true,
+      });
     }
   }
 
-  async signUpEmail(email: string, password: string) {
-    try {
-      const result = await this.afAuth.createUserWithEmailAndPassword(
-        email,
-        password
-      );
-      this.setUserData(result.user);
-    } catch (error: any) {
-      window.alert(error.message);
-    }
+  // Sign out
+  async signOut() {
+    await this.fireAuth.signOut();
+    this.setUserLocalData(null, false);
   }
 
   async forgotPassword(passwordResetEmail: string) {
-    return this.afAuth
-      .sendPasswordResetEmail(passwordResetEmail)
-      .then(() => {
-        window.alert('Password reset email sent, check your inbox.');
-      })
-      .catch((error) => {
-        window.alert(error);
-      });
-  }
-
-  async googleAuth() {
-    return this.authLogin(new firebase.auth.GoogleAuthProvider())
-      .then
-      // (res: any) => {
-      //   this.router.navigate(['dashboard']);
-      // }
-      ();
-  }
-  // Auth logic to run auth providers
-  async authLogin(provider: any) {
-    return this.afAuth
-      .signInWithPopup(provider)
-      .then((result) => {
-        this.router.navigate(['dashboard']);
-        this.setUserData(result.user);
-      })
-      .catch((error) => {
-        window.alert(error);
-      });
-  }
-
-  setUserData(user: any) {
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(
-      `users/${user.uid}`
-    );
-    const userData: User = {
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
-    };
-    return userRef.set(userData, {
-      merge: true,
-    });
-  }
-
-  async logout() {
-    return this.afAuth.signOut().then(() => {
-      this.router.navigate(['']);
-    });
+    try {
+      await this.fireAuth.sendPasswordResetEmail(passwordResetEmail);
+      window.alert('Password reset email sent, check your inbox.');
+    } catch (error) {
+      window.alert(error);
+    }
   }
 }
