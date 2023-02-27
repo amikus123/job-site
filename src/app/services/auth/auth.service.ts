@@ -51,12 +51,14 @@ export class AuthService {
   // EMAIL
   async signUp(email: string, password: string, isEmployerLogin: boolean) {
     try {
+      console.log('signup');
       const { user } = await this.fireAuth.createUserWithEmailAndPassword(
         email,
         password
       );
-      this.setUserData(user as firebase.User, isEmployerLogin);
-      this.setUserLocalData(user, isEmployerLogin);
+      this.setUserData(user as firebase.User, isEmployerLogin).then(() => {
+        this.setUserLocalData(user, isEmployerLogin);
+      });
     } catch (error: any) {
       console.error(error);
     }
@@ -68,7 +70,7 @@ export class AuthService {
         email,
         password
       );
-      this.setUserData(user as firebase.User, isEmployerLogin);
+      await this.setUserData(user as firebase.User, isEmployerLogin);
       this.setUserLocalData(user, isEmployerLogin);
       return null;
     } catch (error: any) {
@@ -119,28 +121,21 @@ export class AuthService {
   /* Setting up user data when sign in with username/password, 
   sign up with username/password and sign in with social auth  
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
-  setUserData(user: firebase.User, isEmployerLogin: boolean) {
+  async setUserData(user: firebase.User, isEmployerLogin: boolean) {
     const userRef: AngularFirestoreDocument<any> = this.firestore.doc(
       `users/${user.uid}`
     );
-    const userBase: User = {
+    const userData: User = {
       uid: user.uid,
       email: user.email as string,
       displayName: user.displayName as string,
       photoURL: user.photoURL as string,
+      isEmployer: isEmployerLogin,
     };
-
-    if (isEmployerLogin) {
-      const employerData: Employer = { ...userBase, isEmployer: true };
-      return userRef.set(employerData, {
-        merge: true,
-      });
-    } else {
-      const employerData: Employee = { ...userBase, isEmployer: false };
-      return userRef.set(employerData, {
-        merge: true,
-      });
-    }
+    console.log('XXDS');
+    return await userRef.set(userData, {
+      merge: true,
+    });
   }
 
   // Sign out

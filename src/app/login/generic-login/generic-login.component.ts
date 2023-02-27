@@ -37,7 +37,6 @@ export class GenericLoginComponent {
   getError(formControl: FormControl<string>) {
     const errors = formControl.errors as ValidationErrors;
     const firstError = Object.entries(errors)[0];
-    console.log(firstError);
     if (firstError[0] === 'firebaseError') {
       return firstError[1];
     } else if (firstError[0] === 'required') {

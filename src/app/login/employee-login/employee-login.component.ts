@@ -30,12 +30,6 @@ export class EmployeeLoginComponent {
   }
   submit = async () => {
     const formValues = this.form.value;
-    console.log(
-      formValues,
-      this.employeeGoogleLogin,
-      this.form.controls.email.errors
-    );
-    // if return
     const errorCode = await this.singInEmployee(
       formValues.email || '',
       formValues.password || ''
