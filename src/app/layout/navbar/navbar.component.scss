@@ -1,6 +1,5 @@
 button {
   font-size: 1.125rem;
-  // margin-right: 1rem;
 }
 .spacer {
   flex: 1 1 auto;
@@ -31,4 +30,20 @@ a {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.mobile {
+  display: flex;
+}
+.desktop {
+  display: none;
+}
+
+@media screen and (min-width: 800px) {
+  .mobile {
+    display: none;
+  }
+  .desktop {
+    display: flex;
+  }
 }
