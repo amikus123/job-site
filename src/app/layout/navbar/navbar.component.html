@@ -5,46 +5,84 @@
     </h1>
 
     <ul>
-      <li *ngFor="let link of links">
-        <a class="mat-h2" [routerLink]="[link.href]">{{ link.text }}</a>
+      <li matRipple *ngFor="let link of links">
+        <a class="mat-h2" [routerLink]="[link.href]">
+          <mat-icon> {{ link.icon }} </mat-icon>
+          {{ link.text }}</a
+        >
       </li>
       <ng-container *ngIf="isEmployer">
-        <li *ngFor="let link of employeeLinks">
-          <a class="mat-h2" [routerLink]="[link.href]">{{ link.text }}</a>
+        <li matRipple *ngFor="let link of employeeLinks">
+          <a class="mat-h2" [routerLink]="[link.href]">
+            <mat-icon> {{ link.icon }} </mat-icon>
+            {{ link.text }}
+          </a>
         </li>
       </ng-container>
       <ng-container *ngIf="isEmployee">
-        <li *ngFor="let link of employerLinks">
-          <a class="mat-h2" [routerLink]="[link.href]">{{ link.text }}</a>
+        <li matRipple *ngFor="let link of employerLinks">
+          <a class="mat-h2" [routerLink]="[link.href]">
+            <mat-icon>{{ link.icon }}</mat-icon>
+            {{ link.text }}</a
+          >
         </li>
       </ng-container>
     </ul>
-    <span class="spacer"></span>
-    <div *ngIf="isLoggedIn; then logOut; else login"></div>
 
+    <!-- <button
+      mat-icon-button
+      [matMenuTriggerFor]="menu"
+      aria-label="Example icon-button with a menu"
+    >
+      <mat-icon>menu</mat-icon>
+    </button> -->
+    <mat-menu #menu="matMenu">
+      <a
+        *ngFor="let link of links"
+        mat-menu-item
+        class="mat-h2"
+        [routerLink]="[link.href]"
+        >{{ link.text }}</a
+      >
+      <button mat-menu-item>
+        <mat-icon>dialpad</mat-icon>
+        <span>Redial</span>
+      </button>
+      <button mat-menu-item disabled>
+        <mat-icon>voicemail</mat-icon>
+        <span>Check voice mail</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>notifications_off</mat-icon>
+        <span>Disable alerts</span>
+      </button>
+    </mat-menu>
+
+    <span class="spacer"></span>
+
+    <div *ngIf="isLoggedIn; then logOut; else login"></div>
     <ng-template #login>
       <button class="loginButton" mat-button [matMenuTriggerFor]="menu">
         <span> Login </span>
-        <mat-icon
-          aria-hidden="false"
-          aria-label="Example home icon"
-          fontIcon="login"
-        ></mat-icon>
+        <mat-icon>login</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <a [routerLink]="['/employer-login']" mat-menu-item>Employer</a>
-        <a [routerLink]="['/employee-login']" mat-menu-item>Employee</a>
+        <a [routerLink]="['/employer-login']" mat-menu-item
+          >Employer
+          <mat-icon>work</mat-icon>
+        </a>
+        <a [routerLink]="['/employee-login']" mat-menu-item
+          >Employee
+
+          <mat-icon>engineering</mat-icon>
+        </a>
       </mat-menu>
     </ng-template>
 
     <ng-template #logOut>
       <button mat-button (click)="signOut()">
         <span> Logout </span>
-        <mat-icon
-          aria-hidden="false"
-          aria-label="Example home icon"
-          fontIcon="logout"
-        ></mat-icon>
+        <mat-icon>logout</mat-icon>
       </button>
     </ng-template>
   </mat-toolbar-row>

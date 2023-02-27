@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { JobListModule } from './job-list/job-list.module';
 import { NgModule } from '@angular/core';
@@ -20,6 +21,7 @@ import { PERSISTENCE } from '@angular/fire/compat/auth';
   declarations: [AppComponent, TestComponent],
   imports: [
     BrowserModule,
+    CommonModule,
     AppRoutingModule,
     AngularFireAuthModule,
     AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),

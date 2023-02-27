@@ -45,6 +45,7 @@ export class AuthService {
     }
     JSON.parse(localStorage.getItem('user')!);
     this.router.navigate(['']);
+    window.location.reload();
   }
 
   // EMAIL
