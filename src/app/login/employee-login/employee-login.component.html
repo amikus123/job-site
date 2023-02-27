@@ -49,7 +49,9 @@
   [form]="form"
   [isEmployer]="false"
   [submit]="submit"
+  [googleLogin]="employeeGoogleLogin"
 ></app-generic-login>
 <p>
   {{ form.getRawValue() | json }}
+  {{ form.errors | json }}
 </p>

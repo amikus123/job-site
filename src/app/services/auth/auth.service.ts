@@ -70,8 +70,10 @@ export class AuthService {
       );
       this.setUserData(user as firebase.User, isEmployerLogin);
       this.setUserLocalData(user, isEmployerLogin);
+      return null;
     } catch (error: any) {
       console.error(error);
+      return error.code as string;
     }
   }
 

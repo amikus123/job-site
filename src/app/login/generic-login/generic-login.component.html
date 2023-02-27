@@ -12,6 +12,7 @@
       {{ !isEmployer ? "employer" : "employee" }}
     </mat-card-subtitle>
   </mat-card-header>
+
   <mat-card-content>
     <form class="example-form" [formGroup]="form" (submit)="submit()">
       <mat-form-field class="example-full-width">
@@ -22,6 +23,9 @@
           formControlName="email"
           placeholder="example@mail.com"
         />
+        <mat-error *ngIf="form.controls.email.errors"
+          >{{ getError(form.controls.email) }}
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field class="example-full-width">
@@ -33,6 +37,9 @@
           matInput
           placeholder="Strong password"
         />
+        <mat-error *ngIf="form.controls.password.errors"
+          >{{ getError(form.controls.password) }}
+        </mat-error>
         <button
           matSuffix
           mat-icon-button
@@ -44,9 +51,10 @@
           }}</mat-icon>
         </button>
       </mat-form-field>
+
       <div class="bottom-row">
         <button mat-raised-button type="submit" color="primary">Submit</button>
-        <button mat-raised-button color="">
+        <button mat-raised-button (click)="googleLogin()">
           <mat-icon> login </mat-icon>
           Google login
         </button>

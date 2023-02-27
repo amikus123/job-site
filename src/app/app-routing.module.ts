@@ -1,13 +1,13 @@
 import { EmployerGuard } from './guards/employer.guard';
 import { NotAuthGuard } from './guards/not-auth.guard';
-import { EmployerLoginComponent } from './employer-login/employer-login.component';
-import { EmployeeLoginComponent } from './employee-login/employee-login.component';
 import { JobPageComponent } from './job/job-page/job-page.component';
 import { LandingPageComponent } from './landing/landing-page/landing-page.component';
 import { JobListPageComponent } from './job-list/job-list-page/job-list-page.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
+import { EmployeeLoginComponent } from './login/employee-login/employee-login.component';
+import { EmployerLoginComponent } from './login/employer-login/employer-login.component';
 
 const routes: Routes = [
   {

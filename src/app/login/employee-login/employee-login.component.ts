@@ -1,3 +1,4 @@
+import { errorCodes } from './../../services/auth/auth';
 import { CommonModule } from '@angular/common';
 import { GenericLoginComponent } from './../generic-login/generic-login.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -21,16 +22,41 @@ export class EmployeeLoginComponent {
     },
     {}
   );
-  employeeGoogleLogin() {
+  employeeGoogleLogin = () => {
     this.auth.googleAuth(false);
+  };
+  private async singInEmployee(email: string, passowrd: string) {
+    return await this.auth.signIn(email, passowrd, false);
   }
-  private singInEmployee(email: string, passowrd: string) {
-    console.log('!!!');
-    this.auth.signIn(email, passowrd, false);
-  }
-  submit = () => {
+  submit = async () => {
     const formValues = this.form.value;
-    console.log(formValues, this.employeeGoogleLogin);
-    this.singInEmployee(formValues.email || '', formValues.password || '');
+    console.log(
+      formValues,
+      this.employeeGoogleLogin,
+      this.form.controls.email.errors
+    );
+    // if return
+    const errorCode = await this.singInEmployee(
+      formValues.email || '',
+      formValues.password || ''
+    );
+    if (errorCode !== null) {
+      if (
+        errorCode === 'auth/invalid-email' ||
+        errorCode === 'auth/email-already-exists'
+      ) {
+        this.form.controls.email.setErrors({
+          firebaseError: errorCodes[errorCode],
+        });
+      } else if (errorCode === 'auth/invalid-password') {
+        this.form.controls.password.setErrors({
+          firebaseError: errorCodes[errorCode],
+        });
+      } else {
+        this.form.controls.email.setErrors({
+          firebaseError: 'Something went wrong',
+        });
+      }
+    }
   };
 }
