@@ -10,8 +10,8 @@ import { FormBuilder, Validators } from '@angular/forms';
   selector: 'app-employee-login',
   standalone: true,
   imports: [SharedModule, GenericLoginComponent, CommonModule],
-  templateUrl: './employee-login.component.html',
-  styleUrls: ['./employee-login.component.scss'],
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.scss'],
 })
 export class EmployeeLoginComponent {
   constructor(private auth: AuthService, private formBuilder: FormBuilder) {}

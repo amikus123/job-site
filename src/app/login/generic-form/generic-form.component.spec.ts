@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GenericLoginComponent } from './generic-login.component';
+import { GenericLoginComponent } from './generic-form.component';
 
 describe('GenericLoginComponent', () => {
   let component: GenericLoginComponent;
@@ -8,9 +8,8 @@ describe('GenericLoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ GenericLoginComponent ]
-    })
-    .compileComponents();
+      imports: [GenericLoginComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(GenericLoginComponent);
     component = fixture.componentInstance;

@@ -1,6 +1,6 @@
-import { errorCodes } from './../../services/auth/auth';
+import { errorCodes } from '../../services/auth/auth';
 import { CommonModule } from '@angular/common';
-import { GenericLoginComponent } from './../generic-login/generic-login.component';
+import { GenericLoginComponent } from '../generic-form/generic-form.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { Component } from '@angular/core';
@@ -9,8 +9,8 @@ import { FormBuilder, Validators } from '@angular/forms';
   selector: 'app-employer-login',
   standalone: true,
   imports: [SharedModule, GenericLoginComponent, CommonModule],
-  templateUrl: './employer-login.component.html',
-  styleUrls: ['./employer-login.component.scss'],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
 })
 export class EmployerLoginComponent {
   constructor(private auth: AuthService, private formBuilder: FormBuilder) {}

@@ -1,4 +1,4 @@
-import { SharedModule } from './../../shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -9,15 +9,15 @@ import {
 } from '@angular/forms';
 
 @Component({
-  selector: 'app-generic-login',
+  selector: 'app-generic-form',
   standalone: true,
   imports: [CommonModule, SharedModule],
-  templateUrl: './generic-login.component.html',
-  styleUrls: ['./generic-login.component.scss'],
+  templateUrl: './generic-form.component.html',
+  styleUrls: ['./generic-form.component.scss'],
 })
 export class GenericLoginComponent {
   constructor() {}
-  @Input('isEmployer') isEmployer = false;
+  @Input('login') isEmployer = false;
   @Input('form') form:
     | FormGroup<{
         email: FormControl<string>;

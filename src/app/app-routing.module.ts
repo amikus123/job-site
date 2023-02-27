@@ -6,8 +6,8 @@ import { JobListPageComponent } from './job-list/job-list-page/job-list-page.com
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
-import { EmployeeLoginComponent } from './login/employee-login/employee-login.component';
-import { EmployerLoginComponent } from './login/employer-login/employer-login.component';
+import { EmployeeLoginComponent } from './login/register/register.component';
+import { EmployerLoginComponent } from './login/login/login.component';
 
 const routes: Routes = [
   {
