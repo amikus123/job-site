@@ -71,18 +71,18 @@
     <div *ngIf="isLoggedIn; then logOut; else login"></div>
     <ng-template #login>
       <button class="loginButton" mat-button [matMenuTriggerFor]="menu">
-        <span> Login </span>
+        <span> Authorization </span>
         <mat-icon>login</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <a [routerLink]="['/employer-login']" mat-menu-item
-          >Employer
-          <mat-icon>work</mat-icon>
+        <a [routerLink]="['/login']" mat-menu-item
+          >Login
+          <mat-icon>key</mat-icon>
         </a>
-        <a [routerLink]="['/employee-login']" mat-menu-item
-          >Employee
+        <a [routerLink]="['/register']" mat-menu-item
+          >Register
 
-          <mat-icon>engineering</mat-icon>
+          <mat-icon>person_add</mat-icon>
         </a>
       </mat-menu>
     </ng-template>

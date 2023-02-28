@@ -17,11 +17,12 @@ import {
 })
 export class GenericLoginComponent {
   constructor() {}
-  @Input('login') isEmployer = false;
+  @Input('isLogin') isLogin = false;
   @Input('form') form:
     | FormGroup<{
         email: FormControl<string>;
         passowrd: FormControl<string>;
+        isEmployer?: FormControl<boolean>;
       }>
     | any;
 

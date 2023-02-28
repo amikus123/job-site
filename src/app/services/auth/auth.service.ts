@@ -51,7 +51,6 @@ export class AuthService {
   // EMAIL
   async signUp(email: string, password: string, isEmployerLogin: boolean) {
     try {
-      console.log('signup');
       const { user } = await this.fireAuth.createUserWithEmailAndPassword(
         email,
         password
@@ -59,19 +58,28 @@ export class AuthService {
       this.setUserData(user as firebase.User, isEmployerLogin).then(() => {
         this.setUserLocalData(user, isEmployerLogin);
       });
+      return null;
     } catch (error: any) {
       console.error(error);
+      return error.code as string;
     }
   }
 
-  async signIn(email: string, password: string, isEmployerLogin: boolean) {
+  async getUserData(user: firebase.User) {
+    const doc = await this.firestore.doc<User>(`users/${user.uid}`).ref.get();
+    return doc.data();
+  }
+
+  async signIn(email: string, password: string) {
     try {
       const { user } = await this.fireAuth.signInWithEmailAndPassword(
         email,
         password
       );
-      await this.setUserData(user as firebase.User, isEmployerLogin);
-      this.setUserLocalData(user, isEmployerLogin);
+
+      const userData = (await this.getUserData(user as firebase.User)) as User;
+      await this.setUserData(user as firebase.User, userData?.isEmployer);
+      this.setUserLocalData(user, userData?.isEmployer);
       return null;
     } catch (error: any) {
       console.error(error);

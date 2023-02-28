@@ -12,7 +12,7 @@ import { FormBuilder, Validators } from '@angular/forms';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class EmployerLoginComponent {
+export class LoginComponent {
   constructor(private auth: AuthService, private formBuilder: FormBuilder) {}
   form = this.formBuilder.group(
     {
@@ -25,7 +25,7 @@ export class EmployerLoginComponent {
     this.auth.googleAuth(true);
   };
   private async singInEmployer(email: string, passowrd: string) {
-    return await this.auth.signIn(email, passowrd, true);
+    return await this.auth.signIn(email, passowrd);
   }
   submit = async () => {
     const formValues = this.form.value;

@@ -13,24 +13,30 @@ import { FormBuilder, Validators } from '@angular/forms';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
-export class EmployeeLoginComponent {
+export class RegisterComponent {
   constructor(private auth: AuthService, private formBuilder: FormBuilder) {}
   form = this.formBuilder.group(
     {
       email: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
+      isEmployer: ['false', [Validators.required]],
     },
     {}
   );
   employeeGoogleLogin = () => {
-    this.auth.googleAuth(false);
+    this.auth.googleAuth(this.form.value.isEmployer === 'false' ? false : true);
   };
-  private async singInEmployee(email: string, passowrd: string) {
-    return await this.auth.signIn(email, passowrd, false);
+  private async signUp(email: string, passowrd: string) {
+    return await this.auth.signUp(
+      email,
+      passowrd,
+      this.form.value.isEmployer === 'false' ? false : true
+    );
   }
   submit = async () => {
     const formValues = this.form.value;
-    const errorCode = await this.singInEmployee(
+    console.log(formValues);
+    const errorCode = await this.signUp(
       formValues.email || '',
       formValues.password || ''
     );

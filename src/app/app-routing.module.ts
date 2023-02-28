@@ -1,3 +1,4 @@
+import { LoginComponent } from './login/login/login.component';
 import { EmployerGuard } from './guards/employer.guard';
 import { NotAuthGuard } from './guards/not-auth.guard';
 import { JobPageComponent } from './job/job-page/job-page.component';
@@ -6,8 +7,7 @@ import { JobListPageComponent } from './job-list/job-list-page/job-list-page.com
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
-import { EmployeeLoginComponent } from './login/register/register.component';
-import { EmployerLoginComponent } from './login/login/login.component';
+import { RegisterComponent } from './login/register/register.component';
 
 const routes: Routes = [
   {
@@ -28,20 +28,20 @@ const routes: Routes = [
     canActivate: [EmployerGuard],
   },
   {
-    path: 'employee-login',
-    component: EmployeeLoginComponent,
-    title: 'Job Site - Employee Login',
+    path: 'login',
+    component: LoginComponent,
+    title: 'Job Site - Login',
     canActivate: [NotAuthGuard],
   },
   {
-    path: 'employer-login',
-    component: EmployerLoginComponent,
-    title: 'Job Site - Employer Login',
+    path: 'register',
+    component: RegisterComponent,
+    title: 'Job Site - Register',
     canActivate: [NotAuthGuard],
   },
   {
     path: 'job-applications',
-    component: EmployerLoginComponent,
+    component: RegisterComponent,
   },
   {
     path: '',

@@ -1,15 +1,10 @@
 <mat-card class="example-card">
   <mat-card-header>
-    <mat-card-title
-      >{{ isEmployer ? "Employer" : "Employee" }} login
-    </mat-card-title>
+    <mat-card-title>{{ isLogin ? "Login" : "Register" }} </mat-card-title>
     <mat-card-subtitle
       >Click
-      <a [routerLink]="[!isEmployer ? '/employer-login' : 'employee-login']"
-        >here</a
-      >
-      to login as
-      {{ !isEmployer ? "employer" : "employee" }}
+      <a [routerLink]="[!isLogin ? '/login' : '/register']">here</a>
+      to {{ !isLogin ? "login" : "register" }}.
     </mat-card-subtitle>
   </mat-card-header>
 
@@ -51,6 +46,16 @@
           }}</mat-icon>
         </button>
       </mat-form-field>
+
+      <ng-container *ngIf="!isLogin">
+        <div class="radio-container">
+          <label>Are you an employer? </label>
+          <mat-radio-group formControlName="isEmployer">
+            <mat-radio-button value="false">No</mat-radio-button>
+            <mat-radio-button value="true">Yes</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </ng-container>
 
       <div class="bottom-row">
         <button mat-raised-button type="submit" color="primary">Submit</button>
