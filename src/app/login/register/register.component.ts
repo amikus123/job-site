@@ -1,10 +1,10 @@
-import { errorCodes } from '../../services/auth/auth';
 import { CommonModule } from '@angular/common';
 import { GenericLoginComponent } from '../generic-form/generic-form.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { setErrors } from '../common';
 
 @Component({
   selector: 'app-employee-login',
@@ -17,7 +17,7 @@ export class RegisterComponent {
   constructor(private auth: AuthService, private formBuilder: FormBuilder) {}
   form = this.formBuilder.group(
     {
-      email: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
       username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       isEmployer: ['false', [Validators.required]],
@@ -43,22 +43,7 @@ export class RegisterComponent {
       formValues.username || ''
     );
     if (errorCode !== null) {
-      if (
-        errorCode === 'auth/invalid-email' ||
-        errorCode === 'auth/email-already-exists'
-      ) {
-        this.form.controls.email.setErrors({
-          firebaseError: errorCodes[errorCode],
-        });
-      } else if (errorCode === 'auth/invalid-password') {
-        this.form.controls.password.setErrors({
-          firebaseError: errorCodes[errorCode],
-        });
-      } else {
-        this.form.controls.email.setErrors({
-          firebaseError: 'Something went wrong',
-        });
-      }
+      setErrors(errorCode, this.form.controls);
     }
   };
 }

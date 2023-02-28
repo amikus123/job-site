@@ -23,7 +23,7 @@ export class EmployeeGuard {
     | boolean
     | UrlTree {
 
-    return this.auth.user === null? false : this.auth.user.pipe(
+    return this.auth.user$ === null? false : this.auth.user$.pipe(
       map(e => {
         if (e) {
           return true;

@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { map, Observable, Subscription } from 'rxjs';
 import firebase from 'firebase/compat/app';
 import { User, Employee, Employer } from './auth';
 import { Injectable } from '@angular/core';
@@ -11,6 +11,8 @@ import {
   DocumentSnapshot,
 } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
+import { take } from 'rxjs/operators';
+
 interface CustomFirebaseUser extends firebase.User {
   isEmployer: boolean;
 }
@@ -22,7 +24,7 @@ export class AuthService {
   // firebase object
   firebaseUser: CustomFirebaseUser | null = null;
   // user from db
-  user: Observable<Action<DocumentSnapshot<Employer | Employee>>> | null = null;
+  user$: Observable<Employer | Employee | undefined> | null = null;
 
   constructor(
     private firestore: AngularFirestore,
@@ -30,16 +32,19 @@ export class AuthService {
     private router: Router
   ) {
     // read local store
+    this.fireAuth.authState.subscribe(async (user) => {
+      if (user) {
+        this.user$ = this.getUserData$(user.uid);
+      }
+    });
   }
 
-  setUserLocalData(user: firebase.User | null, isEmployerLogin: boolean) {
+  async setUserLocalData(user: firebase.User | null, isEmployerLogin: boolean) {
     if (user) {
       const customUser = { ...user, isEmployer: isEmployerLogin };
       this.firebaseUser = customUser;
       localStorage.setItem('user', JSON.stringify(customUser));
-      this.user = this.firestore
-        .doc<Employer | Employee>(`users/${user.uid}`)
-        .snapshotChanges();
+      this.user$ = await this.getUserData$(user.uid);
     } else {
       localStorage.setItem('user', 'null');
     }
@@ -48,7 +53,6 @@ export class AuthService {
     window.location.reload();
   }
 
-  // EMAIL
   async signUp(
     email: string,
     password: string,
@@ -60,10 +64,8 @@ export class AuthService {
         email,
         password
       );
-      console.log(user);
       this.setUserData(user as firebase.User, isEmployerLogin, username).then(
         () => {
-          console.log('succ');
           this.setUserLocalData(user, isEmployerLogin);
         }
       );
@@ -74,9 +76,22 @@ export class AuthService {
     }
   }
 
-  async getUserData(user: firebase.User) {
-    const doc = await this.firestore.doc<User>(`users/${user.uid}`).ref.get();
+  async getUserData(uid: string) {
+    const doc = await this.firestore.doc<User>(`users/${uid}`).ref.get();
     return doc.data();
+  }
+  getUserData$(uid: string) {
+    return this.firestore
+      .doc<Employer | Employee>(`users/${uid}`)
+      .snapshotChanges()
+      .pipe(
+        map((res) => {
+          console.log(res.payload.data());
+          return res.payload.data();
+        })
+      );
+
+    // return this.firestore.doc<Employer | Employee>(`users/${uid}`).get() as any;
   }
 
   async signIn(email: string, password: string) {
@@ -85,8 +100,7 @@ export class AuthService {
         email,
         password
       );
-
-      const userData = (await this.getUserData(user as firebase.User)) as User;
+      const userData = (await this.getUserData(user?.uid as string)) as User;
       await this.setUserData(user as firebase.User, userData?.isEmployer);
       this.setUserLocalData(user, userData?.isEmployer);
       return null;
@@ -96,10 +110,15 @@ export class AuthService {
     }
   }
 
-  // GOOGLE
   async googleAuth(isEmployerLogin: boolean) {
     const user = await this.authLogin(isEmployerLogin);
     if (user) {
+      const userDBData = await this.getUserData(user.uid);
+      // if user is not present in db (first time login) we add him
+      if (userDBData === undefined) {
+        this.setUserData(user as firebase.User, isEmployerLogin);
+      }
+
       this.setUserLocalData(user, isEmployerLogin);
     } else {
       console.error('NO USER');
@@ -135,26 +154,22 @@ export class AuthService {
     return user?.isEmployer || false;
   }
 
-  /* Setting up user data when sign in with username/password, 
-  sign up with username/password and sign in with social auth  
-  provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
   async setUserData(
     user: firebase.User,
     isEmployerLogin: boolean,
     username?: string
   ) {
-    console.log(user);
+    console.log(user, 'WWW');
     const userRef: AngularFirestoreDocument<any> = this.firestore.doc(
       `users/${user.uid}`
     );
     const userData: User = {
       uid: user.uid,
       email: user.email as string,
-      displayName: username ? username : (user.displayName as string),
+      username: username ? username : (user.displayName as string),
       photoURL: user.photoURL as string,
       isEmployer: isEmployerLogin,
     };
-    console.log('XXDS');
     return await userRef.set(userData, {
       merge: true,
     });
@@ -164,14 +179,6 @@ export class AuthService {
   async signOut() {
     await this.fireAuth.signOut();
     this.setUserLocalData(null, false);
-  }
-
-  async forgotPassword(passwordResetEmail: string) {
-    try {
-      await this.fireAuth.sendPasswordResetEmail(passwordResetEmail);
-      window.alert('Password reset email sent, check your inbox.');
-    } catch (error) {
-      window.alert(error);
-    }
+    this.router.navigate(['']);
   }
 }

@@ -1,15 +1,15 @@
 <mat-card class="card">
-  <mat-card-header class="form-card-header">
-    <mat-card-title>{{ isLogin ? "Login" : "Register" }} </mat-card-title>
-    <mat-card-subtitle
-      >Click
-      <a [routerLink]="[!isLogin ? '/login' : '/register']">here</a>
-      to {{ !isLogin ? "login" : "register" }}.
-    </mat-card-subtitle>
+  <mat-card-header>
+    <mat-card-title>Account settings</mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
-    <form class="form" [formGroup]="form" (submit)="submit()">
+    <div *ngIf="auth.user$ | async as user; else loading">
+      {{ user | json }}
+    </div>
+    <ng-template #loading>Loading...</ng-template>
+
+    <!-- <form class="form" [formGroup]="form" (submit)="submit()">
       <mat-form-field class="full-width">
         <mat-label>Email</mat-label>
         <input matInput type="email" formControlName="email" />
@@ -42,7 +42,6 @@
         <button
           matSuffix
           mat-icon-button
-          type="button"
           aria-label="Toggle password visibility"
           (click)="togglePassword()"
         >
@@ -77,6 +76,6 @@
           Google login
         </button>
       </div>
-    </form>
+    </form> -->
   </mat-card-content>
 </mat-card>

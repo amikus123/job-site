@@ -1,3 +1,4 @@
+import { AuthGuard } from './guards/auth.guard';
 import { LoginComponent } from './login/login/login.component';
 import { EmployerGuard } from './guards/employer.guard';
 import { NotAuthGuard } from './guards/not-auth.guard';
@@ -8,6 +9,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { RegisterComponent } from './login/register/register.component';
+import { AccountPageComponent } from './account-page/account-page.component';
 
 const routes: Routes = [
   {
@@ -38,6 +40,12 @@ const routes: Routes = [
     component: RegisterComponent,
     title: 'Job Site - Register',
     canActivate: [NotAuthGuard],
+  },
+  {
+    path: 'account',
+    component: AccountPageComponent,
+    title: 'Job Site - Account',
+    canActivate: [AuthGuard],
   },
   {
     path: 'job-applications',

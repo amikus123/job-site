@@ -38,12 +38,15 @@ export class GenericLoginComponent {
   getError(formControl: FormControl<string>) {
     const errors = formControl.errors as ValidationErrors;
     const firstError = Object.entries(errors)[0];
+    console.log(firstError);
     if (firstError[0] === 'firebaseError') {
       return firstError[1];
     } else if (firstError[0] === 'required') {
       return 'Field is required';
     } else if (firstError[0] === 'minlength') {
-      return 'Passowrd should be at least 6 characters long';
+      return `Field should be at least ${firstError[1].requiredLength} characters long`;
+    } else if (firstError[0] === 'email') {
+      return 'Enter valid email';
     } else {
       return 'idk';
     }

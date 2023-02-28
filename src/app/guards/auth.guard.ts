@@ -20,6 +20,6 @@ export class AuthGuard {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    return !this.auth.isLoggedIn;
+    return this.auth.isLoggedIn;
   }
 }
