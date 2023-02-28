@@ -49,15 +49,24 @@ export class AuthService {
   }
 
   // EMAIL
-  async signUp(email: string, password: string, isEmployerLogin: boolean) {
+  async signUp(
+    email: string,
+    password: string,
+    username: string,
+    isEmployerLogin: boolean
+  ) {
     try {
       const { user } = await this.fireAuth.createUserWithEmailAndPassword(
         email,
         password
       );
-      this.setUserData(user as firebase.User, isEmployerLogin).then(() => {
-        this.setUserLocalData(user, isEmployerLogin);
-      });
+      console.log(user);
+      this.setUserData(user as firebase.User, isEmployerLogin, username).then(
+        () => {
+          console.log('succ');
+          this.setUserLocalData(user, isEmployerLogin);
+        }
+      );
       return null;
     } catch (error: any) {
       console.error(error);
@@ -129,14 +138,19 @@ export class AuthService {
   /* Setting up user data when sign in with username/password, 
   sign up with username/password and sign in with social auth  
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
-  async setUserData(user: firebase.User, isEmployerLogin: boolean) {
+  async setUserData(
+    user: firebase.User,
+    isEmployerLogin: boolean,
+    username?: string
+  ) {
+    console.log(user);
     const userRef: AngularFirestoreDocument<any> = this.firestore.doc(
       `users/${user.uid}`
     );
     const userData: User = {
       uid: user.uid,
       email: user.email as string,
-      displayName: user.displayName as string,
+      displayName: username ? username : (user.displayName as string),
       photoURL: user.photoURL as string,
       isEmployer: isEmployerLogin,
     };

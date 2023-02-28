@@ -18,6 +18,7 @@ export class RegisterComponent {
   form = this.formBuilder.group(
     {
       email: ['', [Validators.required]],
+      username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       isEmployer: ['false', [Validators.required]],
     },
@@ -26,19 +27,20 @@ export class RegisterComponent {
   employeeGoogleLogin = () => {
     this.auth.googleAuth(this.form.value.isEmployer === 'false' ? false : true);
   };
-  private async signUp(email: string, passowrd: string) {
+  private async signUp(email: string, passowrd: string, username: string) {
     return await this.auth.signUp(
       email,
       passowrd,
+      username,
       this.form.value.isEmployer === 'false' ? false : true
     );
   }
   submit = async () => {
     const formValues = this.form.value;
-    console.log(formValues);
     const errorCode = await this.signUp(
       formValues.email || '',
-      formValues.password || ''
+      formValues.password || '',
+      formValues.username || ''
     );
     if (errorCode !== null) {
       if (

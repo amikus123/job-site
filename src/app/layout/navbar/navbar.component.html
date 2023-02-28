@@ -12,7 +12,7 @@
         >
       </li>
       <ng-container *ngIf="isEmployer">
-        <li matRipple *ngFor="let link of employeeLinks">
+        <li matRipple *ngFor="let link of employerLinks">
           <a class="mat-h2" [routerLink]="[link.href]">
             <mat-icon> {{ link.icon }} </mat-icon>
             {{ link.text }}
@@ -20,7 +20,7 @@
         </li>
       </ng-container>
       <ng-container *ngIf="isEmployee">
-        <li matRipple *ngFor="let link of employerLinks">
+        <li matRipple *ngFor="let link of employeeLinks">
           <a class="mat-h2" [routerLink]="[link.href]">
             <mat-icon>{{ link.icon }}</mat-icon>
             {{ link.text }}</a
@@ -45,7 +45,8 @@
         <mat-icon>{{ link.icon }}</mat-icon>
         {{ link.text }}</a
       >
-      <ng-container *ngIf="isEmployee"> </ng-container>
+
+      <ng-container *ngIf="isEmployer"> </ng-container>
       <a
         *ngFor="let link of employerLinks"
         mat-menu-item
@@ -88,10 +89,20 @@
     </ng-template>
 
     <ng-template #logOut>
-      <button mat-button (click)="signOut()">
-        <span> Logout </span>
-        <mat-icon>logout</mat-icon>
+      <button class="loginButton" mat-button [matMenuTriggerFor]="menu">
+        <span> Account </span>
+        <mat-icon>person</mat-icon>
       </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="signOut()">
+          <span> Logout </span>
+          <mat-icon>logout</mat-icon>
+        </button>
+        <a [routerLink]="['/account']" mat-menu-item
+          >Your account
+          <mat-icon>manage_accounts </mat-icon>
+        </a>
+      </mat-menu>
     </ng-template>
   </mat-toolbar-row>
 

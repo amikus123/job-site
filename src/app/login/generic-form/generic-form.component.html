@@ -12,16 +12,21 @@
     <form class="example-form" [formGroup]="form" (submit)="submit()">
       <mat-form-field class="example-full-width">
         <mat-label>Email</mat-label>
-        <input
-          matInput
-          type="email"
-          formControlName="email"
-          placeholder="example@mail.com"
-        />
+        <input matInput type="email" formControlName="email" />
         <mat-error *ngIf="form.controls.email.errors"
           >{{ getError(form.controls.email) }}
         </mat-error>
       </mat-form-field>
+
+      <ng-container *ngIf="!isLogin">
+        <mat-form-field class="example-full-width">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username" />
+          <mat-error *ngIf="form.controls.email.errors"
+            >{{ getError(form.controls.username) }}
+          </mat-error>
+        </mat-form-field>
+      </ng-container>
 
       <mat-form-field class="example-full-width">
         <mat-label>Password</mat-label>
@@ -30,7 +35,6 @@
           formControlName="password"
           [type]="passwordMode ? 'password' : 'text'"
           matInput
-          placeholder="Strong password"
         />
         <mat-error *ngIf="form.controls.password.errors"
           >{{ getError(form.controls.password) }}
@@ -58,8 +62,16 @@
       </ng-container>
 
       <div class="bottom-row">
-        <button mat-raised-button type="submit" color="primary">Submit</button>
-        <button mat-raised-button (click)="googleLogin()">
+        <button
+          mat-raised-button
+          type="submit"
+          [disabled]="!form.valid"
+          color="primary"
+        >
+          {{ isLogin ? "Login" : "Register" }}
+        </button>
+
+        <button mat-raised-button type="button" (click)="googleLogin()">
           <mat-icon> login </mat-icon>
           Google login
         </button>
@@ -67,6 +79,3 @@
     </form>
   </mat-card-content>
 </mat-card>
-<!-- <mat-label>Enter your email</mat-label>
-<input matInput placeholder="pat@example.com" [formControl]="email" required>
-<mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error> -->

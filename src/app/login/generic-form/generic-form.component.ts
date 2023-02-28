@@ -34,7 +34,7 @@ export class GenericLoginComponent {
   togglePassword() {
     this.passwordMode = !this.passwordMode;
   }
-  // get one of the field errors
+  // gets one of the field errors to display
   getError(formControl: FormControl<string>) {
     const errors = formControl.errors as ValidationErrors;
     const firstError = Object.entries(errors)[0];

@@ -30,9 +30,6 @@ export class NavbarComponent {
   isEmployee = this.auth.isEmployee;
   isEmployer = this.auth.isEmployer;
 
-  googleLogin() {
-    this.auth.googleAuth(false);
-  }
   signOut() {
     console.log('!!!');
     this.auth.signOut();
