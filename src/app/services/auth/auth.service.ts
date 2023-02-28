@@ -1,17 +1,14 @@
-import { map, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, EMPTY, map, Observable, Subscription } from 'rxjs';
 import firebase from 'firebase/compat/app';
 import { User, Employee, Employer } from './auth';
 import { Injectable } from '@angular/core';
 import * as auth from 'firebase/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import {
-  Action,
   AngularFirestore,
   AngularFirestoreDocument,
-  DocumentSnapshot,
 } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
-import { take } from 'rxjs/operators';
 
 interface CustomFirebaseUser extends firebase.User {
   isEmployer: boolean;
@@ -21,10 +18,12 @@ interface CustomFirebaseUser extends firebase.User {
   providedIn: 'root',
 })
 export class AuthService {
-  // firebase object
+  // firebase user object
   firebaseUser: CustomFirebaseUser | null = null;
   // user from db
-  user$: Observable<Employer | Employee | undefined> | null = null;
+  user$: BehaviorSubject<Employer | Employee | undefined> = new BehaviorSubject<
+    Employer | Employee | undefined
+  >(undefined);
 
   constructor(
     private firestore: AngularFirestore,
@@ -34,7 +33,7 @@ export class AuthService {
     // read local store
     this.fireAuth.authState.subscribe(async (user) => {
       if (user) {
-        this.user$ = this.getUserData$(user.uid);
+        this.setUserData$(user.uid);
       }
     });
   }
@@ -44,7 +43,7 @@ export class AuthService {
       const customUser = { ...user, isEmployer: isEmployerLogin };
       this.firebaseUser = customUser;
       localStorage.setItem('user', JSON.stringify(customUser));
-      this.user$ = await this.getUserData$(user.uid);
+      this.setUserData$(user.uid);
     } else {
       localStorage.setItem('user', 'null');
     }
@@ -64,11 +63,13 @@ export class AuthService {
         email,
         password
       );
-      this.setUserData(user as firebase.User, isEmployerLogin, username).then(
-        () => {
-          this.setUserLocalData(user, isEmployerLogin);
-        }
-      );
+      this.setUserDataInDB(
+        user as firebase.User,
+        isEmployerLogin,
+        username
+      ).then(() => {
+        this.setUserLocalData(user, isEmployerLogin);
+      });
       return null;
     } catch (error: any) {
       console.error(error);
@@ -80,18 +81,9 @@ export class AuthService {
     const doc = await this.firestore.doc<User>(`users/${uid}`).ref.get();
     return doc.data();
   }
-  getUserData$(uid: string) {
-    return this.firestore
-      .doc<Employer | Employee>(`users/${uid}`)
-      .snapshotChanges()
-      .pipe(
-        map((res) => {
-          console.log(res.payload.data());
-          return res.payload.data();
-        })
-      );
-
-    // return this.firestore.doc<Employer | Employee>(`users/${uid}`).get() as any;
+  async setUserData$(uid: string) {
+    const userCurrentData = await this.getUserData(uid);
+    this.user$.next(userCurrentData);
   }
 
   async signIn(email: string, password: string) {
@@ -101,7 +93,7 @@ export class AuthService {
         password
       );
       const userData = (await this.getUserData(user?.uid as string)) as User;
-      await this.setUserData(user as firebase.User, userData?.isEmployer);
+      await this.setUserDataInDB(user as firebase.User, userData?.isEmployer);
       this.setUserLocalData(user, userData?.isEmployer);
       return null;
     } catch (error: any) {
@@ -111,12 +103,12 @@ export class AuthService {
   }
 
   async googleAuth(isEmployerLogin: boolean) {
-    const user = await this.authLogin(isEmployerLogin);
+    const user = await this.googleAuthLogin(isEmployerLogin);
     if (user) {
       const userDBData = await this.getUserData(user.uid);
       // if user is not present in db (first time login) we add him
       if (userDBData === undefined) {
-        this.setUserData(user as firebase.User, isEmployerLogin);
+        this.setUserDataInDB(user as firebase.User, isEmployerLogin);
       }
 
       this.setUserLocalData(user, isEmployerLogin);
@@ -124,18 +116,44 @@ export class AuthService {
       console.error('NO USER');
     }
   }
-  async authLogin(isEmployerLogin: boolean) {
+  async googleAuthLogin(isEmployerLogin: boolean) {
     try {
       const { user } = await this.fireAuth.signInWithPopup(
         new auth.GoogleAuthProvider()
       );
-      this.setUserData(user as firebase.User, isEmployerLogin);
+      this.setUserDataInDB(user as firebase.User, isEmployerLogin);
       this.router.navigate(['']);
       return user;
     } catch (error) {
       console.error(error);
       return null;
     }
+  }
+
+  async setUserDataInDB(
+    user: firebase.User,
+    isEmployerLogin: boolean,
+    username?: string
+  ) {
+    const userRef: AngularFirestoreDocument<any> = this.firestore.doc(
+      `users/${user.uid}`
+    );
+    const userData: User = {
+      uid: user.uid,
+      email: user.email as string,
+      username: username ? username : (user.displayName as string),
+      photoURL: user.photoURL as string,
+      isEmployer: isEmployerLogin,
+    };
+    return await userRef.set(userData, {
+      merge: true,
+    });
+  }
+  // Sign out
+  async signOut() {
+    await this.fireAuth.signOut();
+    this.setUserLocalData(null, false);
+    this.router.navigate(['']);
   }
 
   get isLoggedIn(): boolean {
@@ -152,33 +170,5 @@ export class AuthService {
     const user: CustomFirebaseUser | null =
       JSON.parse(localStorage.getItem('user') || '') || this.firebaseUser;
     return user?.isEmployer || false;
-  }
-
-  async setUserData(
-    user: firebase.User,
-    isEmployerLogin: boolean,
-    username?: string
-  ) {
-    console.log(user, 'WWW');
-    const userRef: AngularFirestoreDocument<any> = this.firestore.doc(
-      `users/${user.uid}`
-    );
-    const userData: User = {
-      uid: user.uid,
-      email: user.email as string,
-      username: username ? username : (user.displayName as string),
-      photoURL: user.photoURL as string,
-      isEmployer: isEmployerLogin,
-    };
-    return await userRef.set(userData, {
-      merge: true,
-    });
-  }
-
-  // Sign out
-  async signOut() {
-    await this.fireAuth.signOut();
-    this.setUserLocalData(null, false);
-    this.router.navigate(['']);
   }
 }
