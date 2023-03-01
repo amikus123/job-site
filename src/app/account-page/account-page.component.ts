@@ -1,16 +1,17 @@
+import { ToastService } from './../services/toast/toast.service';
 import { FirestoreService } from './../services/firestore/firestore.service';
 import { User } from '../services/types';
 import {
   FormBuilder,
   Validators,
   FormControl,
-  ValidationErrors,
   FormGroup,
 } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { getErrorFromForm } from '../utils/forms';
 
 @Component({
   selector: 'app-account-page',
@@ -23,7 +24,8 @@ export class AccountPageComponent {
   constructor(
     public auth: AuthService,
     private formBuilder: FormBuilder,
-    private firestoreService: FirestoreService
+    private firestoreService: FirestoreService,
+    private toastService: ToastService
   ) {}
   ngOnInit() {
     this.auth.user$?.subscribe((val) => {
@@ -39,7 +41,15 @@ export class AccountPageComponent {
       username: this.form.value.username as string,
       isEmployer: this.form.value.isEmployer === 'true' ? true : false,
     } as User;
-    this.firestoreService.setUserDataInDB(newUserData).then(() => {});
+    this.firestoreService
+      .setUserDataInDB(newUserData)
+      .then(() => {
+        this.toastService.openToast('Changes saved');
+      })
+      .catch((e) => {
+        console.error(e);
+        this.toastService.openToast('Something went wrong :(');
+      });
   }
 
   form = this.formBuilder.group({
@@ -49,20 +59,8 @@ export class AccountPageComponent {
     username: FormControl<string>;
     isEmployer: FormControl<string>;
   }>;
-
-  getError(formControl: FormControl<string>) {
-    const errors = formControl.errors as ValidationErrors;
-    const firstError = Object.entries(errors)[0];
-    if (firstError[0] === 'firebaseError') {
-      return firstError[1];
-    } else if (firstError[0] === 'required') {
-      return 'Field is required';
-    } else if (firstError[0] === 'minlength') {
-      return `Field should be at least ${firstError[1].requiredLength} characters long`;
-    } else if (firstError[0] === 'email') {
-      return 'Enter valid email';
-    } else {
-      return 'idk';
-    }
+  isFormDiffrentFromUser() {}
+  getError(formControl: FormControl<string | number | boolean | null>) {
+    return getErrorFromForm(formControl);
   }
 }

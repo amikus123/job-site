@@ -1,3 +1,4 @@
+import { ToastService } from './../../services/toast/toast.service';
 import { setErrors } from './../../utils/forms';
 import { CommonModule } from '@angular/common';
 import { GenericLoginComponent } from '../generic-form/generic-form.component';
@@ -13,7 +14,11 @@ import { FormBuilder, Validators } from '@angular/forms';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-  constructor(private auth: AuthService, private formBuilder: FormBuilder) {}
+  constructor(
+    private auth: AuthService,
+    private formBuilder: FormBuilder,
+    private toastService: ToastService
+  ) {}
   form = this.formBuilder.group(
     {
       email: ['', [Validators.required, Validators.email]],
@@ -22,7 +27,9 @@ export class LoginComponent {
     {}
   );
   employerGoogleLogin = () => {
-    this.auth.googleAuth(true);
+    this.auth.googleAuth(true).then(() => {
+      this.toastService.openToast('Login was succesful');
+    });
   };
   private async singInEmployer(email: string, passowrd: string) {
     return await this.auth.signIn(email, passowrd);
@@ -35,6 +42,8 @@ export class LoginComponent {
     );
     if (errorCode !== null) {
       setErrors(errorCode, this.form.controls);
+    } else {
+      this.toastService.openToast('Login was succesful');
     }
   };
 }

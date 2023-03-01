@@ -8,8 +8,6 @@ export class LocalStorageService {
   storeUser(user: User | null) {
     if (user) {
       localStorage.setItem('user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('user');
     }
     JSON.parse(localStorage.getItem('user')!);
   }
@@ -24,5 +22,8 @@ export class LocalStorageService {
     } else {
       return JSON.parse(localStorageUser) as User;
     }
+  }
+  removeUser() {
+    localStorage.removeItem('user');
   }
 }

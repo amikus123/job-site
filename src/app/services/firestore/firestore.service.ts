@@ -13,14 +13,20 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class FirestoreService {
   // user from db
-  user$: BehaviorSubject<Employer | Employee | undefined> = new BehaviorSubject<
-    Employer | Employee | undefined
-  >(undefined);
+  user$: BehaviorSubject<Employer | Employee | undefined | null> =
+    new BehaviorSubject<Employer | Employee | undefined | null>(undefined);
 
   constructor(
     private firestore: AngularFirestore,
     private localStorageService: LocalStorageService
-  ) {}
+  ) {
+    const user = this.localStorageService.getUserFromStorageAndParse();
+    if (user !== null) {
+      this.user$.next(user);
+    } else {
+      this.user$.next(null);
+    }
+  }
 
   async getUserData(uid: string) {
     const doc = await this.firestore.doc<User>(`users/${uid}`).ref.get();
@@ -68,7 +74,6 @@ export class FirestoreService {
   }
   async setUserDataWithUID$(uid: string) {
     const userCurrentData = await this.getUserData(uid);
-    // this.user$.next(userCurrentData);
     this.user$.next(userCurrentData);
   }
   async setUserData$(user: User) {

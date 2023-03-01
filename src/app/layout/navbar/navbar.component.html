@@ -70,43 +70,42 @@
     </mat-menu>
     <!-- I use guard check beacuse page is refreshed -->
 
-    <div *ngIf="auth.user$ | async as user; else loading">
-      <div *ngIf="user; then logOut; else login"></div>
-      <ng-template #login>
-        <button class="loginButton" mat-button [matMenuTriggerFor]="menu">
-          <span> Authorization </span>
-          <mat-icon>login</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-          <a [routerLink]="['/login']" mat-menu-item
-            >Login
-            <mat-icon>key</mat-icon>
-          </a>
-          <a [routerLink]="['/register']" mat-menu-item
-            >Register
+    <div *ngIf="auth.isLoggedIn; then logOut; else login"></div>
+    <ng-template #login>
+      <button class="loginButton" mat-button [matMenuTriggerFor]="menu">
+        <span> Authorization </span>
+        <mat-icon>login</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <a [routerLink]="['/login']" mat-menu-item
+          >Login
+          <mat-icon>key</mat-icon>
+        </a>
+        <a [routerLink]="['/register']" mat-menu-item
+          >Register
 
-            <mat-icon>person_add</mat-icon>
-          </a>
-        </mat-menu>
-      </ng-template>
+          <mat-icon>person_add</mat-icon>
+        </a>
+      </mat-menu>
+    </ng-template>
 
-      <ng-template #logOut>
-        <button class="loginButton" mat-button [matMenuTriggerFor]="menu">
-          <span> Account </span>
-          <mat-icon>person</mat-icon>
+    <ng-template #logOut>
+      <button class="loginButton" mat-button [matMenuTriggerFor]="menu">
+        <span> Account </span>
+        <mat-icon>person</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="signOut()">
+          <span> Logout </span>
+          <mat-icon>logout</mat-icon>
         </button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="signOut()">
-            <span> Logout </span>
-            <mat-icon>logout</mat-icon>
-          </button>
-          <a [routerLink]="['/account']" mat-menu-item
-            >Your account
-            <mat-icon>manage_accounts </mat-icon>
-          </a>
-        </mat-menu>
-      </ng-template>
-    </div>
+        <a [routerLink]="['/account']" mat-menu-item
+          >Your account
+          <mat-icon>manage_accounts </mat-icon>
+        </a>
+      </mat-menu>
+    </ng-template>
+
     <ng-template #loading>
       <mat-spinner class="login-spinner"></mat-spinner
     ></ng-template>

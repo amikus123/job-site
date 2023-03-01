@@ -26,21 +26,34 @@
         </mat-error>
       </mat-form-field>
 
-      <ng-container *ngIf="true">
-        <div class="radio-container">
-          <label class="mat-subtitle-1">Are you an employer? </label>
-          <mat-radio-group formControlName="isEmployer">
-            <mat-radio-button value="false">No</mat-radio-button>
-            <mat-radio-button value="true">Yes</mat-radio-button>
-          </mat-radio-group>
-        </div>
-      </ng-container>
+      <div class="radio-container">
+        <label class="mat-subtitle-1">Are you an employer? </label>
+        <mat-radio-group formControlName="isEmployer">
+          <mat-radio-button value="false">No</mat-radio-button>
+          <mat-radio-button value="true">Yes</mat-radio-button>
+        </mat-radio-group>
+      </div>
 
       <div class="button-row">
         <button
           mat-raised-button
           type="submit"
-          [disabled]="!form.valid"
+          is
+          disabled
+          if
+          values
+          are
+          the
+          same
+          as
+          current
+          user
+          [disabled]="
+            !form.valid ||
+            ((auth.user$ | async)?.username === form.controls.username.value &&
+              (auth.user$ | async)?.isEmployer ===
+                (form.controls.isEmployer.value === 'true' ? true : false))
+          "
           color="primary"
         >
           Save changes

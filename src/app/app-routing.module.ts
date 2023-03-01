@@ -1,3 +1,4 @@
+import { AddJobComponent } from './add-job/add-job.component';
 import { AuthGuard } from './guards/auth.guard';
 import { LoginComponent } from './login/login/login.component';
 import { EmployerGuard } from './guards/employer.guard';
@@ -25,7 +26,7 @@ const routes: Routes = [
 
   {
     path: 'add-job',
-    component: JobPageComponent,
+    component: AddJobComponent,
     title: 'Job Site - Add Job',
     canActivate: [EmployerGuard],
   },

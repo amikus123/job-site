@@ -15,7 +15,7 @@ import { LocalStorageService } from '../localStorage/local-storage.service';
 })
 export class AuthService {
   // user from db
-  user$: BehaviorSubject<Employer | Employee | undefined>;
+  user$: BehaviorSubject<Employer | Employee | undefined | null>;
   constructor(
     private fireAuth: AngularFireAuth,
     private firestoreService: FirestoreService,
@@ -31,10 +31,17 @@ export class AuthService {
     });
   }
 
-  async setUserLocalData(user: firebase.User | null, isEmployerLogin: boolean) {
-    this.firestoreService.setUserDataDuringLogin(user, isEmployerLogin);
-    this.router.navigate(['']);
-    window.location.reload();
+  async setUserLocalData(
+    user: firebase.User | null,
+    isEmployerLogin: boolean,
+    usernamse?: string
+  ) {
+    this.firestoreService
+      .setUserDataDuringLogin(user, isEmployerLogin, usernamse)
+      .then(() => {
+        this.router.navigate(['']);
+        window.location.reload();
+      });
   }
 
   async signUp(
@@ -48,15 +55,13 @@ export class AuthService {
         email,
         password
       );
-      this.firestoreService
-        .setUserDataDuringLogin(
-          user as firebase.User,
-          isEmployerLogin,
-          username
-        )
-        .then(() => {
-          this.setUserLocalData(user, isEmployerLogin);
-        });
+      await this.firestoreService.setUserDataDuringLogin(
+        user as firebase.User,
+        isEmployerLogin,
+        username
+      );
+      this.router.navigate(['']);
+      window.location.reload();
       return null;
     } catch (error: any) {
       console.error(error);
@@ -95,11 +100,12 @@ export class AuthService {
       const { user } = await this.fireAuth.signInWithPopup(
         new auth.GoogleAuthProvider()
       );
-      this.firestoreService.setUserDataDuringLogin(
+      await this.firestoreService.setUserDataDuringLogin(
         user as firebase.User,
         isEmployerLogin
       );
       this.router.navigate(['']);
+      window.location.reload();
       return user;
     } catch (error) {
       console.error(error);
@@ -109,15 +115,15 @@ export class AuthService {
 
   async signOut() {
     await this.fireAuth.signOut();
-    this.setUserLocalData(null, false);
+    this.localStorageService.removeUser();
     this.router.navigate(['']);
+    window.location.reload();
   }
 
   get isLoggedIn(): boolean {
     const localStorageUser =
       this.localStorageService.getUserFromStorageAndParse();
-    console.log(localStorageUser);
-
+    console.log(localStorageUser, 'isLoggedIn');
     if (localStorageUser === null) {
       return false;
     } else {
