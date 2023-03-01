@@ -1,3 +1,4 @@
+import { FirestoreService } from './../services/firestore/firestore.service';
 import { User } from '../services/types';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -13,7 +14,11 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./account-page.component.scss'],
 })
 export class AccountPageComponent {
-  constructor(public auth: AuthService, private formBuilder: FormBuilder) {}
+  constructor(
+    public auth: AuthService,
+    private formBuilder: FormBuilder,
+    private firestoreService: FirestoreService
+  ) {}
   ngOnInit() {
     this.auth.user$?.subscribe((val) => {
       this.form.setValue({
@@ -23,12 +28,14 @@ export class AccountPageComponent {
     });
   }
   saveChanges() {
-    const newUser = {
+    const newUserData = {
       ...this.auth.user$.value,
       username: this.form.value.username as string,
       isEmployer: this.form.value.isEmployer === 'true' ? true : false,
     } as User;
-    console.log(newUser);
+    this.firestoreService.setUserData(newUserData).then(() => {
+      console.log('yippie');
+    });
   }
 
   form = this.formBuilder.group({

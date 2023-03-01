@@ -1,14 +1,12 @@
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FirestoreService } from './../firestore/firestore.service';
-import { BehaviorSubject, EMPTY, map, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import firebase from 'firebase/compat/app';
 import { User, Employee, Employer } from '../types';
 import { Injectable } from '@angular/core';
 import * as auth from 'firebase/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import {
-  AngularFirestore,
-  AngularFirestoreDocument,
-} from '@angular/fire/compat/firestore';
+
 import { Router } from '@angular/router';
 
 interface CustomFirebaseUser extends firebase.User {
@@ -27,6 +25,7 @@ export class AuthService {
   constructor(
     private fireAuth: AngularFireAuth,
     private firestoreService: FirestoreService,
+    private firestore: AngularFirestore,
     private router: Router
   ) {
     // read local store
@@ -79,7 +78,9 @@ export class AuthService {
 
   async setUserData$(uid: string) {
     const userCurrentData = await this.firestoreService.getUserData(uid);
-    this.user$.next(userCurrentData);
+    const a = await this.firestore.doc<User>(`users/${uid}`).snapshotChanges();
+    // this.user$.next(userCurrentData);
+    this.user$ = new BehaviorSubject(a);
   }
 
   async signIn(email: string, password: string) {

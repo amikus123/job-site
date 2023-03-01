@@ -1,27 +1,20 @@
-import { BehaviorSubject, EMPTY, map, Observable, Subscription } from 'rxjs';
 import firebase from 'firebase/compat/app';
-import { User, Employee, Employer } from '../types';
+import { User } from '../types';
 import { Injectable } from '@angular/core';
-import * as auth from 'firebase/auth';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 import {
   AngularFirestore,
   AngularFirestoreDocument,
 } from '@angular/fire/compat/firestore';
-import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FirestoreService {
-  constructor(
-    private firestore: AngularFirestore,
-    private fireAuth: AngularFireAuth,
-    private router: Router
-  ) {}
+  constructor(private firestore: AngularFirestore) {}
 
   async getUserData(uid: string) {
     const doc = await this.firestore.doc<User>(`users/${uid}`).ref.get();
+
     return doc.data();
   }
 
