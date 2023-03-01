@@ -23,11 +23,10 @@ export class AuthService {
     private router: Router
   ) {
     this.user$ = this.firestoreService.user$;
-
     // read local store
     this.fireAuth.authState.subscribe(async (user) => {
       if (user) {
-        this.firestoreService.setUserData$(user.uid);
+        this.firestoreService.setUserDataWithUID$(user.uid);
       }
     });
   }
@@ -108,7 +107,6 @@ export class AuthService {
     }
   }
 
-  // Sign out
   async signOut() {
     await this.fireAuth.signOut();
     this.setUserLocalData(null, false);

@@ -16,7 +16,7 @@ export class LocalStorageService {
     if (user) {
       const customUser = { ...user, isEmployer: isEmployerLogin };
       localStorage.setItem('user', JSON.stringify(customUser));
-      this.firestoreService.setUserData$(user.uid);
+      this.firestoreService.setUserDataWithUID$(user.uid);
     } else {
       localStorage.removeItem('user');
     }

@@ -1,10 +1,10 @@
+import { setErrors } from './../../utils/forms';
 import { CommonModule } from '@angular/common';
 import { GenericLoginComponent } from '../generic-form/generic-form.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { setErrors } from '../common';
 @Component({
   selector: 'app-employer-login',
   standalone: true,

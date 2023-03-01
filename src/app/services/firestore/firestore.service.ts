@@ -35,17 +35,18 @@ export class FirestoreService {
       photoURL: user.photoURL as string,
       isEmployer: isEmployerLogin,
     };
-    return await this.setUserData(userData);
+    return await this.setUserDataInDB(userData);
   }
 
-  async setUserData(user: User) {
+  async setUserDataInDB(user: User) {
     const userRef: AngularFirestoreDocument<any> = this.firestore.doc(
       `users/${user.uid}`
     );
     try {
-      return await userRef.set(user, {
+      await userRef.set(user, {
         merge: true,
       });
+      this.setUserData$(user);
     } catch (e) {
       console.error(e);
     }
@@ -58,9 +59,12 @@ export class FirestoreService {
       this.setUserDataDuringLogin(user as firebase.User, isEmployerLogin);
     }
   }
-  async setUserData$(uid: string) {
+  async setUserDataWithUID$(uid: string) {
     const userCurrentData = await this.getUserData(uid);
     // this.user$.next(userCurrentData);
     this.user$.next(userCurrentData);
+  }
+  async setUserData$(user: User) {
+    this.user$.next(user);
   }
 }

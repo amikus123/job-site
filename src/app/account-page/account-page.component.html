@@ -12,28 +12,19 @@
       <p class="mat-subtitle-1">Email: {{ user.email }}</p>
     </div>
 
-    <ng-template #loading>Loading...</ng-template>
-
+    <ng-template #loading>
+      <mat-spinner class="loading-margin"></mat-spinner
+    ></ng-template>
     <p class="mat-headline-6">Edit your account:</p>
 
     <form class="form" [formGroup]="form" (submit)="saveChanges()">
       <mat-form-field>
-        <mat-label class="mat-subtitle-1">Email</mat-label>
+        <mat-label class="mat-subtitle-1">Username</mat-label>
         <input matInput type="email" formControlName="username" />
-        <!-- <mat-error *ngIf="form.controls.email.errors"
-          >{{ getError(form.controls.email) }}
-        </mat-error> -->
+        <mat-error *ngIf="form.controls.username.errors"
+          >{{ getError(form.controls.username) }}
+        </mat-error>
       </mat-form-field>
-
-      <!-- <ng-container *ngIf="!isLogin">
-        <mat-form-field >
-          <mat-label>Username</mat-label>
-          <input matInput formControlName="username" />
-          <mat-error *ngIf="form.controls.email.errors"
-            >{{ getError(form.controls.username) }}
-          </mat-error>
-        </mat-form-field>
-      </ng-container> -->
 
       <ng-container *ngIf="true">
         <div class="radio-container">
@@ -56,6 +47,5 @@
         </button>
       </div>
     </form>
-    {{ form.value | json }}
   </mat-card-content>
 </mat-card>
