@@ -1,20 +1,25 @@
 import firebase from 'firebase/compat/app';
-import { User } from '../types';
+import { Employee, Employer, User } from '../types';
 import { Injectable } from '@angular/core';
 import {
   AngularFirestore,
   AngularFirestoreDocument,
 } from '@angular/fire/compat/firestore';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FirestoreService {
+  // user from db
+  user$: BehaviorSubject<Employer | Employee | undefined> = new BehaviorSubject<
+    Employer | Employee | undefined
+  >(undefined);
+
   constructor(private firestore: AngularFirestore) {}
 
   async getUserData(uid: string) {
     const doc = await this.firestore.doc<User>(`users/${uid}`).ref.get();
-
     return doc.data();
   }
 
@@ -37,9 +42,13 @@ export class FirestoreService {
     const userRef: AngularFirestoreDocument<any> = this.firestore.doc(
       `users/${user.uid}`
     );
-    return await userRef.set(user, {
-      merge: true,
-    });
+    try {
+      return await userRef.set(user, {
+        merge: true,
+      });
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   async setUserDataIfMissing(user: firebase.User, isEmployerLogin: boolean) {
@@ -48,5 +57,10 @@ export class FirestoreService {
     if (userDBData === undefined) {
       this.setUserDataDuringLogin(user as firebase.User, isEmployerLogin);
     }
+  }
+  async setUserData$(uid: string) {
+    const userCurrentData = await this.getUserData(uid);
+    // this.user$.next(userCurrentData);
+    this.user$.next(userCurrentData);
   }
 }

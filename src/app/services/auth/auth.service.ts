@@ -8,43 +8,32 @@ import * as auth from 'firebase/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 import { Router } from '@angular/router';
-
-interface CustomFirebaseUser extends firebase.User {
-  isEmployer: boolean;
-}
+import { LocalStorageService } from '../localStorage/local-storage.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   // user from db
-  user$: BehaviorSubject<Employer | Employee | undefined> = new BehaviorSubject<
-    Employer | Employee | undefined
-  >(undefined);
-
+  user$: BehaviorSubject<Employer | Employee | undefined>;
   constructor(
     private fireAuth: AngularFireAuth,
     private firestoreService: FirestoreService,
-    private firestore: AngularFirestore,
+    private localStorageService: LocalStorageService,
     private router: Router
   ) {
+    this.user$ = this.firestoreService.user$;
+
     // read local store
     this.fireAuth.authState.subscribe(async (user) => {
       if (user) {
-        this.setUserData$(user.uid);
+        this.firestoreService.setUserData$(user.uid);
       }
     });
   }
 
   async setUserLocalData(user: firebase.User | null, isEmployerLogin: boolean) {
-    if (user) {
-      const customUser = { ...user, isEmployer: isEmployerLogin };
-      localStorage.setItem('user', JSON.stringify(customUser));
-      this.setUserData$(user.uid);
-    } else {
-      localStorage.removeItem('user');
-    }
-    JSON.parse(localStorage.getItem('user')!);
+    this.localStorageService.storeUserAndUpdateUserData(user, isEmployerLogin);
     this.router.navigate(['']);
     window.location.reload();
   }
@@ -74,13 +63,6 @@ export class AuthService {
       console.error(error);
       return error.code as string;
     }
-  }
-
-  async setUserData$(uid: string) {
-    const userCurrentData = await this.firestoreService.getUserData(uid);
-    const a = await this.firestore.doc<User>(`users/${uid}`).snapshotChanges();
-    // this.user$.next(userCurrentData);
-    this.user$ = new BehaviorSubject(a);
   }
 
   async signIn(email: string, password: string) {
@@ -134,31 +116,30 @@ export class AuthService {
   }
 
   get isLoggedIn(): boolean {
-    const localStorageUser = localStorage.getItem('user');
+    const localStorageUser =
+      this.localStorageService.getUserFromStorageAndParse();
     if (localStorageUser === null) {
       return false;
     } else {
-      const user: CustomFirebaseUser | null = JSON.parse(localStorageUser);
       return true;
     }
   }
   get isEmployee(): boolean {
-    const localStorageUser = localStorage.getItem('user');
+    const localStorageUser =
+      this.localStorageService.getUserFromStorageAndParse();
     if (localStorageUser === null) {
       return false;
     } else {
-      const user: CustomFirebaseUser | null = JSON.parse(localStorageUser);
-
-      return !user?.isEmployer;
+      return !localStorageUser?.isEmployer;
     }
   }
   get isEmployer(): boolean {
-    const localStorageUser = localStorage.getItem('user');
+    const localStorageUser =
+      this.localStorageService.getUserFromStorageAndParse();
     if (localStorageUser === null) {
       return false;
     } else {
-      const user: CustomFirebaseUser | null = JSON.parse(localStorageUser);
-      return !!user?.isEmployer;
+      return !!localStorageUser?.isEmployer;
     }
   }
 }
