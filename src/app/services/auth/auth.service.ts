@@ -32,7 +32,7 @@ export class AuthService {
   }
 
   async setUserLocalData(user: firebase.User | null, isEmployerLogin: boolean) {
-    this.localStorageService.storeUserAndUpdateUserData(user, isEmployerLogin);
+    this.firestoreService.setUserDataDuringLogin(user, isEmployerLogin);
     this.router.navigate(['']);
     window.location.reload();
   }
@@ -116,6 +116,8 @@ export class AuthService {
   get isLoggedIn(): boolean {
     const localStorageUser =
       this.localStorageService.getUserFromStorageAndParse();
+    console.log(localStorageUser);
+
     if (localStorageUser === null) {
       return false;
     } else {
@@ -125,6 +127,8 @@ export class AuthService {
   get isEmployee(): boolean {
     const localStorageUser =
       this.localStorageService.getUserFromStorageAndParse();
+    console.log(localStorageUser, !localStorageUser?.isEmployer, 'isEmployee');
+
     if (localStorageUser === null) {
       return false;
     } else {
@@ -134,6 +138,7 @@ export class AuthService {
   get isEmployer(): boolean {
     const localStorageUser =
       this.localStorageService.getUserFromStorageAndParse();
+    console.log(localStorageUser, !!localStorageUser?.isEmployer, 'isEmployer');
     if (localStorageUser === null) {
       return false;
     } else {

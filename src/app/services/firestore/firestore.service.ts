@@ -1,3 +1,4 @@
+import { LocalStorageService } from './../localStorage/local-storage.service';
 import firebase from 'firebase/compat/app';
 import { Employee, Employer, User } from '../types';
 import { Injectable } from '@angular/core';
@@ -16,7 +17,10 @@ export class FirestoreService {
     Employer | Employee | undefined
   >(undefined);
 
-  constructor(private firestore: AngularFirestore) {}
+  constructor(
+    private firestore: AngularFirestore,
+    private localStorageService: LocalStorageService
+  ) {}
 
   async getUserData(uid: string) {
     const doc = await this.firestore.doc<User>(`users/${uid}`).ref.get();
@@ -24,18 +28,20 @@ export class FirestoreService {
   }
 
   async setUserDataDuringLogin(
-    user: firebase.User,
+    user: firebase.User | null,
     isEmployerLogin: boolean,
     username?: string
   ) {
-    const userData: User = {
-      uid: user.uid,
-      email: user.email as string,
-      username: username ? username : (user.displayName as string),
-      photoURL: user.photoURL as string,
-      isEmployer: isEmployerLogin,
-    };
-    return await this.setUserDataInDB(userData);
+    if (user) {
+      const userData: User = {
+        uid: user.uid,
+        email: user.email as string,
+        username: username ? username : (user.displayName as string),
+        photoURL: user.photoURL as string,
+        isEmployer: isEmployerLogin,
+      };
+      return await this.setUserDataInDB(userData);
+    }
   }
 
   async setUserDataInDB(user: User) {
@@ -46,6 +52,7 @@ export class FirestoreService {
       await userRef.set(user, {
         merge: true,
       });
+      this.localStorageService.storeUser(user);
       this.setUserData$(user);
     } catch (e) {
       console.error(e);

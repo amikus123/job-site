@@ -11,7 +11,7 @@
           {{ link.text }}</a
         >
       </li>
-      <ng-container *ngIf="isEmployer">
+      <ng-container *ngIf="(auth.user$ | async)?.isEmployer === true">
         <li matRipple *ngFor="let link of employerLinks">
           <a class="mat-h2" [routerLink]="[link.href]">
             <mat-icon> {{ link.icon }} </mat-icon>
@@ -19,7 +19,7 @@
           </a>
         </li>
       </ng-container>
-      <ng-container *ngIf="isEmployee">
+      <ng-container *ngIf="(auth.user$ | async)?.isEmployer === false">
         <li matRipple *ngFor="let link of employeeLinks">
           <a class="mat-h2" [routerLink]="[link.href]">
             <mat-icon>{{ link.icon }}</mat-icon>
@@ -46,7 +46,7 @@
         {{ link.text }}</a
       >
 
-      <ng-container *ngIf="isEmployer"> </ng-container>
+      <ng-container *ngIf="(auth.user$ | async)?.isEmployer"> </ng-container>
       <a
         *ngFor="let link of employerLinks"
         mat-menu-item
@@ -56,7 +56,7 @@
         <mat-icon>{{ link.icon }}</mat-icon
         >{{ link.text }}</a
       >
-      <ng-container *ngIf="isEmployee">
+      <ng-container *ngIf="!(auth.user$ | async)?.isEmployer">
         <a
           *ngFor="let link of employeeLinks"
           mat-menu-item
@@ -68,44 +68,49 @@
         ></ng-container
       >
     </mat-menu>
+    <!-- I use guard check beacuse page is refreshed -->
 
-    <div *ngIf="isLoggedIn; then logOut; else login"></div>
-    <ng-template #login>
-      <button class="loginButton" mat-button [matMenuTriggerFor]="menu">
-        <span> Authorization </span>
-        <mat-icon>login</mat-icon>
-      </button>
-      <mat-menu #menu="matMenu">
-        <a [routerLink]="['/login']" mat-menu-item
-          >Login
-          <mat-icon>key</mat-icon>
-        </a>
-        <a [routerLink]="['/register']" mat-menu-item
-          >Register
-
-          <mat-icon>person_add</mat-icon>
-        </a>
-      </mat-menu>
-    </ng-template>
-
-    <ng-template #logOut>
-      <button class="loginButton" mat-button [matMenuTriggerFor]="menu">
-        <span> Account </span>
-        <mat-icon>person</mat-icon>
-      </button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="signOut()">
-          <span> Logout </span>
-          <mat-icon>logout</mat-icon>
+    <div *ngIf="auth.user$ | async as user; else loading">
+      <div *ngIf="user; then logOut; else login"></div>
+      <ng-template #login>
+        <button class="loginButton" mat-button [matMenuTriggerFor]="menu">
+          <span> Authorization </span>
+          <mat-icon>login</mat-icon>
         </button>
-        <a [routerLink]="['/account']" mat-menu-item
-          >Your account
-          <mat-icon>manage_accounts </mat-icon>
-        </a>
-      </mat-menu>
-    </ng-template>
-  </mat-toolbar-row>
+        <mat-menu #menu="matMenu">
+          <a [routerLink]="['/login']" mat-menu-item
+            >Login
+            <mat-icon>key</mat-icon>
+          </a>
+          <a [routerLink]="['/register']" mat-menu-item
+            >Register
 
+            <mat-icon>person_add</mat-icon>
+          </a>
+        </mat-menu>
+      </ng-template>
+
+      <ng-template #logOut>
+        <button class="loginButton" mat-button [matMenuTriggerFor]="menu">
+          <span> Account </span>
+          <mat-icon>person</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="signOut()">
+            <span> Logout </span>
+            <mat-icon>logout</mat-icon>
+          </button>
+          <a [routerLink]="['/account']" mat-menu-item
+            >Your account
+            <mat-icon>manage_accounts </mat-icon>
+          </a>
+        </mat-menu>
+      </ng-template>
+    </div>
+    <ng-template #loading>
+      <mat-spinner class="login-spinner"></mat-spinner
+    ></ng-template>
+  </mat-toolbar-row>
   <!-- <mat-toolbar-row>
     {{ isEmployee ? "is employee" : "not employee" }}
     {{ isEmployer ? "is employer" : "not employer" }}
