@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { errorCodes } from '../services/auth/auth';
+import { errorCodes } from '../services/types';
 
 export const setErrors = (
   errorCode: string,

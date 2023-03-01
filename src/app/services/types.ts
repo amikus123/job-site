@@ -1,3 +1,4 @@
+// user stored in db
 export interface User {
   uid: string;
   email: string;

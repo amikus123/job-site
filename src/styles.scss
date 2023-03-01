@@ -16,21 +16,19 @@ body {
   margin: 2rem auto;
   max-width: 500px;
 }
-.form-card-header {
-  margin-bottom: 1rem;
-}
-.full-width {
-  width: 100%;
-}
-
-.radio-container {
-  margin-bottom: 1rem;
-}
-
-.bottom-row {
-  display: flex;
-  justify-content: space-between;
-}
-.card mat-form-field {
-  margin-bottom: 0.5rem;
+.card-form {
+  mat-card-title {
+    margin-bottom: 1rem;
+  }
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+  .radio-container {
+    margin-bottom: 1rem;
+  }
+  .button-row {
+    display: flex;
+    justify-content: space-between;
+  }
 }

@@ -1,0 +1,59 @@
+import { BehaviorSubject, EMPTY, map, Observable, Subscription } from 'rxjs';
+import firebase from 'firebase/compat/app';
+import { User, Employee, Employer } from '../types';
+import { Injectable } from '@angular/core';
+import * as auth from 'firebase/auth';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import {
+  AngularFirestore,
+  AngularFirestoreDocument,
+} from '@angular/fire/compat/firestore';
+import { Router } from '@angular/router';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class FirestoreService {
+  constructor(
+    private firestore: AngularFirestore,
+    private fireAuth: AngularFireAuth,
+    private router: Router
+  ) {}
+
+  async getUserData(uid: string) {
+    const doc = await this.firestore.doc<User>(`users/${uid}`).ref.get();
+    return doc.data();
+  }
+
+  async setUserDataDuringLogin(
+    user: firebase.User,
+    isEmployerLogin: boolean,
+    username?: string
+  ) {
+    const userData: User = {
+      uid: user.uid,
+      email: user.email as string,
+      username: username ? username : (user.displayName as string),
+      photoURL: user.photoURL as string,
+      isEmployer: isEmployerLogin,
+    };
+    return await this.setUserData(userData);
+  }
+
+  async setUserData(user: User) {
+    const userRef: AngularFirestoreDocument<any> = this.firestore.doc(
+      `users/${user.uid}`
+    );
+    return await userRef.set(user, {
+      merge: true,
+    });
+  }
+
+  async setUserDataIfMissing(user: firebase.User, isEmployerLogin: boolean) {
+    const userDBData = await this.getUserData(user.uid);
+    // if user is not present in db (first time login) we add him
+    if (userDBData === undefined) {
+      this.setUserDataDuringLogin(user as firebase.User, isEmployerLogin);
+    }
+  }
+}
