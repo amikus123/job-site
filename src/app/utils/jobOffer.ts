@@ -1,11 +1,11 @@
-export type SalaryType = 'brutto' | 'netto';
+export type Salary = 'brutto' | 'netto';
 export type Currency = 'zl' | '$';
 export interface JobOffer {
   jobTitle: string;
   salary: number;
-  // add currency type
   currency: Currency;
-  salaryType: SalaryType;
+  salaryType: Salary;
   jobDescription: string;
   location: string;
+  authorUid: string;
 }

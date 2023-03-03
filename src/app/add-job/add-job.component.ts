@@ -1,11 +1,14 @@
+import { Salary, Currency } from './../utils/jobOffer';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { FirestoreService } from './../services/firestore/firestore.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, NgForm, Validators } from '@angular/forms';
 import { User } from './../services/types';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { getErrorFromForm } from '../utils/forms';
+import { JobOffer } from '../utils/jobOffer';
+import { ToastService } from '../services/toast/toast.service';
 
 @Component({
   selector: 'app-add-job',
@@ -18,15 +21,31 @@ export class AddJobComponent {
   constructor(
     public auth: AuthService,
     private formBuilder: FormBuilder,
-    private firestoreService: FirestoreService
+    private firestoreService: FirestoreService,
+    private toastService: ToastService
   ) {}
-  saveChanges() {
-    // const newUserData = {
-    //   ...this.auth.user$.value,
-    //   username: this.form.value.username as string,
-    //   isEmployer: this.form.value.isEmployer === 'true' ? true : false,
-    // } as User;
-    // this.firestoreService.setUserDataInDB(newUserData).then(() => {});
+  @ViewChild('formDirective') private formDirective: NgForm | undefined;
+
+  submit() {
+    const newJobOfferData = {
+      currency: this.form.value.currency as Currency,
+      jobDescription: this.form.value.jobDescription,
+      jobTitle: this.form.value.jobTitle,
+      location: this.form.value.location,
+      salary: this.form.value.salary,
+      salaryType: this.form.value.salaryType as Salary,
+      authorUid: this.auth.user$.value?.uid || '',
+    } as JobOffer;
+    this.firestoreService
+      .createJobOffer(newJobOfferData)
+      .then(() => {
+        this.toastService.openToast('Job offer added');
+        this.formDirective?.resetForm();
+      })
+      .catch((e) => {
+        console.error(e);
+        this.toastService.openToast('Something went wrong :(');
+      });
   }
 
   form = this.formBuilder.group({

@@ -123,7 +123,6 @@ export class AuthService {
   get isLoggedIn(): boolean {
     const localStorageUser =
       this.localStorageService.getUserFromStorageAndParse();
-    console.log(localStorageUser, 'isLoggedIn');
     if (localStorageUser === null) {
       return false;
     } else {

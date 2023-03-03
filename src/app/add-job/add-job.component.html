@@ -4,7 +4,12 @@
   </mat-card-header>
 
   <mat-card-content>
-    <form class="form" [formGroup]="form" (submit)="saveChanges()">
+    <form
+      class="form"
+      #formDirective="ngForm"
+      [formGroup]="form"
+      (submit)="submit()"
+    >
       <mat-form-field>
         <mat-label class="mat-subtitle-1">Job title</mat-label>
         <input matInput formControlName="jobTitle" />
@@ -48,7 +53,7 @@
       </mat-form-field>
 
       <div class="radio-container">
-        <label class="mat-subtitle-1">Salary type: </label>
+        <label class="mat-subtitle-1">Salary type*: </label>
         <mat-radio-group formControlName="salaryType">
           <mat-radio-button value="brutto">Brutto</mat-radio-button>
           <mat-radio-button value="netto">Netto</mat-radio-button>

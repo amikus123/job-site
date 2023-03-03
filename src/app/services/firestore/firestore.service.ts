@@ -1,3 +1,4 @@
+import { JobOffer } from './../../utils/jobOffer';
 import { LocalStorageService } from './../localStorage/local-storage.service';
 import firebase from 'firebase/compat/app';
 import { Employee, Employer, User } from '../types';
@@ -6,7 +7,7 @@ import {
   AngularFirestore,
   AngularFirestoreDocument,
 } from '@angular/fire/compat/firestore';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -78,5 +79,14 @@ export class FirestoreService {
   }
   async setUserData$(user: User) {
     this.user$.next(user);
+  }
+
+  async createJobOffer(jobOffer: JobOffer) {
+    this.firestore.collection('jobOffers').add(jobOffer);
+  }
+  async getUserJobOffers(uid: string): Promise<Observable<JobOffer[]>> {
+    return this.firestore
+      .collection('jobOffers', (ref) => ref.where('authorUid', '==', uid))
+      .valueChanges() as any;
   }
 }
