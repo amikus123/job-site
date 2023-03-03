@@ -8,6 +8,7 @@ import {
   MatTableDataSource,
   MatTableDataSourcePaginator,
 } from '@angular/material/table';
+import { ToastService } from '../services/toast/toast.service';
 
 @Component({
   selector: 'app-my-jobs',
@@ -25,12 +26,16 @@ export class MyJobsComponent implements AfterViewInit {
     'jobDescription',
     'location',
     'applications',
-    'actions',
+    'id',
   ];
   dataSource: MatTableDataSource<any, MatTableDataSourcePaginator> | null =
     null;
 
-  constructor(private firestore: FirestoreService, private auth: AuthService) {}
+  constructor(
+    private firestore: FirestoreService,
+    private auth: AuthService,
+    private toastService: ToastService
+  ) {}
 
   async ngAfterViewInit() {
     const res = await this.firestore.getUserJobOffers(
@@ -41,5 +46,17 @@ export class MyJobsComponent implements AfterViewInit {
       console.log(e);
       this.dataSource = new MatTableDataSource<any>(e);
     });
+  }
+
+  removeButton(jobId: string) {
+    this.firestore
+      .deleteJobOfffer(jobId)
+      .then(() => {
+        this.toastService.openToast('Deleted job offer');
+      })
+      .catch((e) => {
+        this.toastService.openToast('Something went wrong');
+        console.error(e);
+      });
   }
 }

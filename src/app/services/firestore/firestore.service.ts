@@ -87,6 +87,10 @@ export class FirestoreService {
   async getUserJobOffers(uid: string): Promise<Observable<JobOffer[]>> {
     return this.firestore
       .collection('jobOffers', (ref) => ref.where('authorUid', '==', uid))
-      .valueChanges() as any;
+      .valueChanges({ idField: 'id' }) as any;
+  }
+
+  deleteJobOfffer(jobId: string) {
+    return this.firestore.collection('jobOffers').doc(jobId).delete();
   }
 }

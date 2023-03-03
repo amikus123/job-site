@@ -43,22 +43,32 @@
           <td mat-cell *matCellDef="let element">{{ element.applications }}</td>
         </ng-container>
 
-        <ng-container matColumnDef="actions">
+        <ng-container matColumnDef="id">
           <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef>
-            <a routerLink="/asdasd" class="margin-right" mat-raised-button>
+          <td mat-cell *matCellDef="let element">
+            <a
+              [routerLink]="['/employer-view-job', element.id]"
+              class="margin-right"
+              mat-raised-button
+            >
               View applications
             </a>
 
             <a
-              routerLink="/asdasd"
+              [routerLink]="['/employer-edit-job', element.id]"
               class="margin-right"
               mat-raised-button
               color="primary"
             >
               Edit
             </a>
-            <a routerLink="/asdasd" mat-raised-button color="warn">Remove</a>
+            <button
+              (click)="removeButton(element.id)"
+              mat-raised-button
+              color="warn"
+            >
+              Remove
+            </button>
           </td>
         </ng-container>
 
