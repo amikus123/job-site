@@ -77,14 +77,14 @@ export class FirestoreService {
     const userCurrentData = await this.getUserData(uid);
     this.user$.next(userCurrentData);
   }
-  async setUserData$(user: User) {
+  setUserData$(user: User) {
     this.user$.next(user);
   }
 
   async createJobOffer(jobOffer: JobOffer) {
-    this.firestore.collection('jobOffers').add(jobOffer);
+    return this.firestore.collection('jobOffers').add(jobOffer);
   }
-  async getUserJobOffers(uid: string): Promise<Observable<JobOffer[]>> {
+  getUserJobOffers(uid: string): Promise<Observable<JobOffer[]>> {
     return this.firestore
       .collection('jobOffers', (ref) => ref.where('authorUid', '==', uid))
       .valueChanges({ idField: 'id' }) as any;
@@ -92,5 +92,14 @@ export class FirestoreService {
 
   deleteJobOfffer(jobId: string) {
     return this.firestore.collection('jobOffers').doc(jobId).delete();
+  }
+
+  getJobOffer(jobId: string) {
+    return this.firestore
+      .doc<JobOffer>(`jobOffers/${jobId}`)
+      .valueChanges() as Observable<JobOffer>;
+  }
+  modifyJobOffer(jobId: string, data: JobOffer) {
+    return this.firestore.doc<JobOffer>(`jobOffers/${jobId}`).update(data);
   }
 }

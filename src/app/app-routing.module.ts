@@ -1,3 +1,6 @@
+import { IsJobOwnerGuard } from './guards/is-job-owner.guard';
+import { EditJobComponent } from './edit-job/edit-job.component';
+import { ViewJobApplicationsComponent } from './view-job-applications/view-job-applications.component';
 import { MyJobsComponent } from './my-jobs/my-jobs.component';
 import { AddJobComponent } from './add-job/add-job.component';
 import { AuthGuard } from './guards/auth.guard';
@@ -37,6 +40,21 @@ const routes: Routes = [
     title: 'Job Site - My Jobs',
     canActivate: [EmployerGuard],
   },
+
+  {
+    path: 'view-job-applications/:jobId',
+    component: ViewJobApplicationsComponent,
+    title: 'Job Site - View Job Applications',
+    canActivate: [IsJobOwnerGuard],
+  },
+
+  {
+    path: 'edit-job/:jobId',
+    component: EditJobComponent,
+    title: 'Job Site - Edit Job',
+    canActivate: [IsJobOwnerGuard],
+  },
+
   {
     path: 'login',
     component: LoginComponent,

@@ -1,9 +1,9 @@
+import { JobFormComponent } from './../job-form/job-form.component';
 import { Salary, Currency } from './../utils/jobOffer';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { FirestoreService } from './../services/firestore/firestore.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { FormBuilder, FormControl, NgForm, Validators } from '@angular/forms';
-import { User } from './../services/types';
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { getErrorFromForm } from '../utils/forms';
@@ -13,7 +13,7 @@ import { ToastService } from '../services/toast/toast.service';
 @Component({
   selector: 'app-add-job',
   standalone: true,
-  imports: [CommonModule, SharedModule],
+  imports: [CommonModule, SharedModule, JobFormComponent],
   templateUrl: './add-job.component.html',
   styleUrls: ['./add-job.component.scss'],
 })
@@ -49,12 +49,30 @@ export class AddJobComponent {
   }
 
   form = this.formBuilder.group({
-    jobTitle: ['', [Validators.required, Validators.minLength(4)]],
-    salary: [1000, [Validators.required, Validators.min(0)]],
-    currency: ['zl'],
-    salaryType: ['brutto', [Validators.required]],
-    jobDescription: ['', [Validators.required]],
-    location: ['', [Validators.required]],
+    jobTitle: new FormControl<string>('', {
+      validators: [Validators.required, Validators.minLength(4)],
+      nonNullable: true,
+    }),
+    salary: new FormControl<number>(1000, {
+      validators: [Validators.required, Validators.min(1)],
+      nonNullable: true,
+    }),
+    currency: new FormControl<Currency>('zl', {
+      validators: [Validators.required],
+      nonNullable: true,
+    }),
+    salaryType: new FormControl<Salary>('brutto', {
+      validators: [Validators.required],
+      nonNullable: true,
+    }),
+    jobDescription: new FormControl<string>('', {
+      validators: [Validators.required],
+      nonNullable: true,
+    }),
+    location: new FormControl<string>('', {
+      validators: [Validators.required],
+      nonNullable: true,
+    }),
   });
 
   getError(formControl: FormControl<string | number | boolean | null>) {

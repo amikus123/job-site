@@ -14,6 +14,7 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PERSISTENCE } from '@angular/fire/compat/auth';
 import { BrowserModule } from '@angular/platform-browser';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [AppComponent, TestComponent],
@@ -28,6 +29,7 @@ import { BrowserModule } from '@angular/platform-browser';
     AppRoutingModule,
     NavbarComponent,
     FooterComponent,
+    MatProgressSpinnerModule,
   ],
   providers: [
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
