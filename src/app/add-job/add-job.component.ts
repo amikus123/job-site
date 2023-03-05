@@ -23,10 +23,12 @@ export class AddJobComponent {
     private formBuilder: FormBuilder,
     private firestoreService: FirestoreService,
     private toastService: ToastService
-  ) {}
+  ) {
+    console.log(firestoreService.user$, auth, 'XD');
+  }
   @ViewChild('formDirective') private formDirective: NgForm | undefined;
 
-  submit() {
+  submit = () => {
     const newJobOfferData = {
       currency: this.form.value.currency as Currency,
       jobDescription: this.form.value.jobDescription,
@@ -46,7 +48,7 @@ export class AddJobComponent {
         console.error(e);
         this.toastService.openToast('Something went wrong :(');
       });
-  }
+  };
 
   form = this.formBuilder.group({
     jobTitle: new FormControl<string>('', {

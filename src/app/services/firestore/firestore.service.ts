@@ -1,4 +1,4 @@
-import { JobOffer } from './../../utils/jobOffer';
+import { JobOffer, JobOfferWithId } from './../../utils/jobOffer';
 import { LocalStorageService } from './../localStorage/local-storage.service';
 import firebase from 'firebase/compat/app';
 import { Employee, Employer, User } from '../types';
@@ -84,10 +84,12 @@ export class FirestoreService {
   async createJobOffer(jobOffer: JobOffer) {
     return this.firestore.collection('jobOffers').add(jobOffer);
   }
-  getUserJobOffers(uid: string): Promise<Observable<JobOffer[]>> {
+  getUserJobOffers(uid: string): Observable<JobOffer[]> {
     return this.firestore
-      .collection('jobOffers', (ref) => ref.where('authorUid', '==', uid))
-      .valueChanges({ idField: 'id' }) as any;
+      .collection<JobOffer>('jobOffers', (ref) =>
+        ref.where('authorUid', '==', uid)
+      )
+      .valueChanges({ idField: 'id' });
   }
 
   deleteJobOfffer(jobId: string) {
@@ -101,5 +103,10 @@ export class FirestoreService {
   }
   modifyJobOffer(jobId: string, data: JobOffer) {
     return this.firestore.doc<JobOffer>(`jobOffers/${jobId}`).update(data);
+  }
+  getAllJobs(): Observable<JobOfferWithId[]> {
+    return this.firestore
+      .collection<JobOffer>('jobOffers')
+      .valueChanges({ idField: 'id' });
   }
 }

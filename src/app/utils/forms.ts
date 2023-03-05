@@ -4,8 +4,8 @@ import { errorCodes } from '../services/types';
 export const setErrors = (
   errorCode: string,
   formControl: {
-    email: FormControl<string | null>;
-    password: FormControl<string | null>;
+    email: FormControl<string>;
+    password: FormControl<string>;
   }
 ) => {
   if (
@@ -34,7 +34,6 @@ export const getErrorFromForm = (
 ) => {
   const errors = formControl.errors as ValidationErrors;
   const firstError = Object.entries(errors)[0];
-  console.log(firstError);
   if (firstError[0] === 'firebaseError') {
     return firstError[1];
   } else if (firstError[0] === 'required') {

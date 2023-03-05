@@ -5,7 +5,7 @@ import { GenericLoginComponent } from '../generic-form/generic-form.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormControl } from '@angular/forms';
 @Component({
   selector: 'app-employer-login',
   standalone: true,
@@ -21,8 +21,14 @@ export class LoginComponent {
   ) {}
   form = this.formBuilder.group(
     {
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      email: new FormControl('', {
+        validators: [Validators.required, Validators.email],
+        nonNullable: true,
+      }),
+      password: new FormControl('', {
+        validators: [Validators.required, Validators.minLength(6)],
+        nonNullable: true,
+      }),
     },
     {}
   );

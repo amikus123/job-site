@@ -83,7 +83,7 @@ export class EditJobComponent {
     );
   }
 
-  submit() {
+  submit = () => {
     const newJobOfferData = {
       currency: this.form.value.currency as Currency,
       jobDescription: this.form.value.jobDescription,
@@ -103,7 +103,7 @@ export class EditJobComponent {
         console.error(e);
         this.toastService.openToast('Something went wrong :(');
       });
-  }
+  };
 
   getError(formControl: FormControl<string | number | boolean | null>) {
     return getErrorFromForm(formControl);

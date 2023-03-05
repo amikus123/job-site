@@ -4,7 +4,6 @@ import {
   NavigationCancel,
   Router,
 } from '@angular/router';
-import { IsJobOwnerGuard } from './guards/is-job-owner.guard';
 import { Component } from '@angular/core';
 
 @Component({

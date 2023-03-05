@@ -3,7 +3,6 @@ import { FirestoreService } from './../services/firestore/firestore.service';
 import { SharedModule } from './../shared/shared.module';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
 import {
   MatTableDataSource,
   MatTableDataSourcePaginator,
@@ -28,8 +27,7 @@ export class MyJobsComponent implements AfterViewInit {
     'applications',
     'id',
   ];
-  dataSource: MatTableDataSource<any, MatTableDataSourcePaginator> | null =
-    null;
+  dataSource!: MatTableDataSource<any, MatTableDataSourcePaginator>;
 
   constructor(
     private firestore: FirestoreService,
@@ -43,7 +41,7 @@ export class MyJobsComponent implements AfterViewInit {
     );
 
     res.subscribe((e) => {
-      console.log(e);
+      // console.log(e);
       this.dataSource = new MatTableDataSource<any>(e);
     });
   }

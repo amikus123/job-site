@@ -4,7 +4,7 @@ import { GenericLoginComponent } from '../generic-form/generic-form.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-employee-login',
@@ -17,10 +17,22 @@ export class RegisterComponent {
   constructor(private auth: AuthService, private formBuilder: FormBuilder) {}
   form = this.formBuilder.group(
     {
-      email: ['', [Validators.required, Validators.email]],
-      username: ['', [Validators.required, Validators.minLength(4)]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      isEmployer: ['false', [Validators.required]],
+      email: new FormControl('', {
+        validators: [Validators.required, Validators.email],
+        nonNullable: true,
+      }),
+      username: new FormControl('', {
+        validators: [Validators.required, Validators.minLength(4)],
+        nonNullable: true,
+      }),
+      password: new FormControl('', {
+        validators: [Validators.required, Validators.minLength(6)],
+        nonNullable: true,
+      }),
+      isEmployer: new FormControl<'false' | 'true'>('false', {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
     },
     {}
   );

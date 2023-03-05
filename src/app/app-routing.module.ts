@@ -1,3 +1,4 @@
+import { JobListComponent } from './job-list/job-list.component';
 import { IsJobOwnerGuard } from './guards/is-job-owner.guard';
 import { EditJobComponent } from './edit-job/edit-job.component';
 import { ViewJobApplicationsComponent } from './view-job-applications/view-job-applications.component';
@@ -9,7 +10,6 @@ import { EmployerGuard } from './guards/employer.guard';
 import { NotAuthGuard } from './guards/not-auth.guard';
 import { JobPageComponent } from './job/job-page/job-page.component';
 import { LandingPageComponent } from './landing/landing-page/landing-page.component';
-import { JobListPageComponent } from './job-list/job-list-page/job-list-page.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
@@ -19,7 +19,7 @@ import { AccountPageComponent } from './account-page/account-page.component';
 const routes: Routes = [
   {
     path: 'job-list',
-    component: JobListPageComponent,
+    component: JobListComponent,
     title: 'Job Site - Job list',
   },
   {

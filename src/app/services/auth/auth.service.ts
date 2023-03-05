@@ -1,4 +1,3 @@
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FirestoreService } from './../firestore/firestore.service';
 import { BehaviorSubject } from 'rxjs';
 import firebase from 'firebase/compat/app';
