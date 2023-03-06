@@ -7,11 +7,19 @@ table {
 }
 mat-card {
   margin: 1rem;
-  overflow: hidden;
+  // overflow: hidden;
+  min-height: 100vh;
   mat-card-title {
     margin-bottom: 1rem;
   }
   mat-spinner {
     margin: 1rem auto 2rem;
+  }
+  table {
+    border-bottom: 1px solid #e0e0e0;
+    min-width: max-content;
+  }
+  .wrap {
+    overflow-x: auto;
   }
 }
