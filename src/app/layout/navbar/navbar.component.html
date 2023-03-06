@@ -45,30 +45,34 @@
         <mat-icon>{{ link.icon }}</mat-icon>
         {{ link.text }}</a
       >
-
-      <ng-container *ngIf="(auth.user$ | async)?.isEmployer"> </ng-container>
-      <a
-        *ngFor="let link of employerLinks"
-        mat-menu-item
-        class="mat-h2"
-        [routerLink]="[link.href]"
-      >
-        <mat-icon>{{ link.icon }}</mat-icon
-        >{{ link.text }}</a
-      >
-      <ng-container *ngIf="!(auth.user$ | async)?.isEmployer">
-        <a
-          *ngFor="let link of employeeLinks"
-          mat-menu-item
-          class="mat-h2"
-          [routerLink]="[link.href]"
+      <ng-container *ngIf="auth.user$ | async">
+        <ng-container
+          *ngIf="(auth.user$ | async)?.isEmployer; else employeeMobileLinks"
         >
-          <mat-icon>{{ link.icon }}</mat-icon
-          >{{ link.text }}</a
-        ></ng-container
-      >
+          <a
+            *ngFor="let link of employerLinks"
+            mat-menu-item
+            class="mat-h2"
+            [routerLink]="[link.href]"
+          >
+            <mat-icon>{{ link.icon }}</mat-icon
+            >{{ link.text }}</a
+          >
+        </ng-container>
+
+        <ng-template #employeeMobileLinks>
+          <a
+            *ngFor="let link of employeeLinks"
+            mat-menu-item
+            class="mat-h2"
+            [routerLink]="[link.href]"
+          >
+            <mat-icon>{{ link.icon }}</mat-icon
+            >{{ link.text }}</a
+          ></ng-template
+        >
+      </ng-container>
     </mat-menu>
-    <!-- I use guard check beacuse page is refreshed -->
 
     <div *ngIf="auth.isLoggedIn; then logOut; else login"></div>
     <ng-template #login>
