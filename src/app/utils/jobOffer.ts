@@ -8,6 +8,7 @@ export interface JobOffer {
   jobDescription: string;
   location: string;
   authorUid: string;
+  applications?: string[];
   id?: string;
 }
 export interface JobOfferWithId extends JobOffer {

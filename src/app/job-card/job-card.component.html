@@ -1,0 +1,52 @@
+<li class="jobOffer" *ngIf="job">
+  <mat-card class="card mat-elevation-z4" *ngIf="users && job">
+    <mat-card-header>
+      <mat-card-title>{{ job.jobTitle }}</mat-card-title>
+
+      <mat-card-subtitle
+        >Added by:
+        {{ (users | filter : job.authorUid || "").username }}
+      </mat-card-subtitle>
+
+      <mat-card-subtitle>Added by: </mat-card-subtitle>
+
+      <mat-card-subtitle
+        >Salary:
+        {{ job.salary + " " + job.currency + " " + job.salaryType }}
+      </mat-card-subtitle>
+
+      <mat-card-subtitle
+        >Location:
+        {{ job.location }}
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p class="mat-subtitle-1">
+        {{ job.jobDescription }}
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button disabled mat-button *ngIf="user?.isEmployer; else employee">
+        Employers can't apply
+      </button>
+
+      <ng-template #employee>
+        <button
+          *ngIf="
+            this.user &&
+              !job.applications?.includes(this.user?.uid || '') &&
+              !hasClicked;
+            else disabled
+          "
+          (click)="click(job.id)"
+          mat-button
+        >
+          Apply
+        </button>
+        <ng-template #disabled>
+          <button disabled mat-button>You have already applied</button>
+        </ng-template>
+      </ng-template>
+    </mat-card-actions>
+  </mat-card>
+</li>

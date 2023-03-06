@@ -1,3 +1,4 @@
+import { LandingComponent } from './landing/landing.component';
 import { JobListComponent } from './job-list/job-list.component';
 import { IsJobOwnerGuard } from './guards/is-job-owner.guard';
 import { EditJobComponent } from './edit-job/edit-job.component';
@@ -9,7 +10,6 @@ import { LoginComponent } from './login/login/login.component';
 import { EmployerGuard } from './guards/employer.guard';
 import { NotAuthGuard } from './guards/not-auth.guard';
 import { JobPageComponent } from './job/job-page/job-page.component';
-import { LandingPageComponent } from './landing/landing-page/landing-page.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
@@ -79,7 +79,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    component: LandingPageComponent,
+    component: LandingComponent,
     title: 'Job Site - Find your dream job',
   },
   { path: '*', component: ErrorPageComponent, title: 'Job Site - Error' },

@@ -7,7 +7,7 @@ import {
   AngularFirestore,
   AngularFirestoreDocument,
 } from '@angular/fire/compat/firestore';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, from, merge, Observable, take, zip } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -82,7 +82,9 @@ export class FirestoreService {
   }
 
   async createJobOffer(jobOffer: JobOffer) {
-    return this.firestore.collection('jobOffers').add(jobOffer);
+    return this.firestore
+      .collection('jobOffers')
+      .add({ ...jobOffer, applications: [] });
   }
   getUserJobOffers(uid: string): Observable<JobOffer[]> {
     return this.firestore
@@ -104,9 +106,33 @@ export class FirestoreService {
   modifyJobOffer(jobId: string, data: JobOffer) {
     return this.firestore.doc<JobOffer>(`jobOffers/${jobId}`).update(data);
   }
-  getAllJobs(): Observable<JobOfferWithId[]> {
-    return this.firestore
+  getAllJobs(): Observable<[JobOfferWithId[], User[]]> {
+    const a: Observable<JobOfferWithId[]> = this.firestore
       .collection<JobOffer>('jobOffers')
       .valueChanges({ idField: 'id' });
+
+    const b = this.firestore.collection<User>('users').valueChanges();
+    const c = zip(a, b);
+    return c;
+  }
+
+  async addAplicationToJob(userId: string, jobId: string) {
+    const job = this.firestore.doc<JobOffer>(`jobOffers/${jobId}`);
+    const currecntApplications =
+      (await job.ref.get()).data()?.applications || [];
+    if (currecntApplications.includes(userId)) {
+      return 'Already applied';
+    } else {
+      try {
+        return job.update({ applications: [...currecntApplications, userId] });
+      } catch (e) {
+        return 'Error';
+      }
+    }
+  }
+
+  getUserName(userId: string | undefined) {
+    const user = this.firestore.doc<User>(`users/${userId}`).valueChanges();
+    return user;
   }
 }

@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FilterPipe } from '../filter.pipe';
 
 @NgModule({
   imports: [
@@ -12,8 +13,14 @@ import { CommonModule } from '@angular/common';
     MaterialModule,
     CommonModule,
   ],
-  declarations: [],
-  exports: [FormsModule, ReactiveFormsModule, RouterModule, MaterialModule],
-  providers: [],
+  declarations: [FilterPipe],
+  exports: [
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule,
+    MaterialModule,
+    FilterPipe,
+  ],
+  providers: [FilterPipe],
 })
 export class SharedModule {}

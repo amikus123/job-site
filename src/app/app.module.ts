@@ -1,3 +1,4 @@
+import { JobCardComponent } from './job-card/job-card.component';
 import { FooterComponent } from './layout/footer/footer.component';
 import { NavbarComponent } from './layout/navbar/navbar.component';
 import { CommonModule } from '@angular/common';

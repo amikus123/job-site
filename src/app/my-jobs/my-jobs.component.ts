@@ -35,13 +35,13 @@ export class MyJobsComponent implements AfterViewInit {
     private toastService: ToastService
   ) {}
 
-  async ngAfterViewInit() {
-    const res = await this.firestore.getUserJobOffers(
+  ngAfterViewInit() {
+    const res = this.firestore.getUserJobOffers(
       this.auth.user$.value?.uid || ''
     );
 
     res.subscribe((e) => {
-      // console.log(e);
+      console.log(e);
       this.dataSource = new MatTableDataSource<any>(e);
     });
   }

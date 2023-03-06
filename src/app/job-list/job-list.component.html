@@ -3,31 +3,15 @@
     <mat-card-title>Job Offers</mat-card-title>
   </mat-card-header>
 
-  <div *ngIf="jobs$ | async as jobs; else loading">
+  <div *ngIf="data$ | async as joinedDataArr; else loading">
     <ul>
-      <li *ngFor="let job of jobs" class="jobOffer">
-        <mat-card class="card mat-elevation-z4">
-          <mat-card-header>
-            <mat-card-title>{{ job.jobTitle }}</mat-card-title>
-            <mat-card-subtitle
-              >Salary:
-              {{ job.salary + " " + job.currency + " " + job.salaryType }}
-            </mat-card-subtitle>
-            <mat-card-subtitle
-              >Location:
-              {{ job.location }}
-            </mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            <p class="mat-subtitle-1">
-              {{ job.jobDescription }}
-            </p>
-          </mat-card-content>
-          <mat-card-actions>
-            <button mat-button>Apply</button>
-          </mat-card-actions>
-        </mat-card>
-      </li>
+      <app-job-card
+        *ngFor="let job of joinedDataArr[0]"
+        [user]="user"
+        [job]="job"
+        [users]="joinedDataArr[1]"
+      >
+      </app-job-card>
     </ul>
   </div>
 
