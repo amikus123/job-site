@@ -1,0 +1,21 @@
+<mat-card class="wrap">
+  <mat-card-header>
+    <mat-card-title>Your applications</mat-card-title>
+  </mat-card-header>
+
+  <div *ngIf="jobOffers$ | async as joinedDataArr; else loading">
+    <ul>
+      <app-job-card
+        *ngFor="let job of joinedDataArr[0]"
+        [user]="user"
+        [job]="job"
+        [users]="joinedDataArr[1]"
+      >
+      </app-job-card>
+    </ul>
+  </div>
+
+  <ng-template #loading>
+    <mat-spinner></mat-spinner>
+  </ng-template>
+</mat-card>

@@ -107,13 +107,13 @@ export class FirestoreService {
     return this.firestore.doc<JobOffer>(`jobOffers/${jobId}`).update(data);
   }
   getAllJobs(): Observable<[JobOfferWithId[], User[]]> {
-    const a: Observable<JobOfferWithId[]> = this.firestore
+    const jobOffers: Observable<JobOfferWithId[]> = this.firestore
       .collection<JobOffer>('jobOffers')
       .valueChanges({ idField: 'id' });
 
-    const b = this.firestore.collection<User>('users').valueChanges();
-    const c = zip(a, b);
-    return c;
+    const users = this.firestore.collection<User>('users').valueChanges();
+    const joinedData = zip(jobOffers, users);
+    return joinedData;
   }
 
   async addAplicationToJob(userId: string, jobId: string) {
@@ -134,5 +134,16 @@ export class FirestoreService {
   getUserName(userId: string | undefined) {
     const user = this.firestore.doc<User>(`users/${userId}`).valueChanges();
     return user;
+  }
+
+  getJobsUserApplied(userId: string) {
+    const appliedJobs = this.firestore
+      .collection<JobOffer>('jobOffers', (ref) =>
+        ref.where('applications', 'array-contains', userId)
+      )
+      .valueChanges({ idField: 'id' });
+    const users = this.firestore.collection<User>('users').valueChanges();
+    const joinedData = zip(appliedJobs, users);
+    return joinedData;
   }
 }

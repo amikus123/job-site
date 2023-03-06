@@ -1,8 +1,7 @@
-import { Employer, Employee, User } from './../services/types';
-import { ToastService } from './../services/toast/toast.service';
+import { User } from './../services/types';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { SharedModule } from './../shared/shared.module';
-import { Observable, Subscription, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { JobOfferWithId } from './../utils/jobOffer';
 import { FirestoreService } from './../services/firestore/firestore.service';
 import { Component } from '@angular/core';

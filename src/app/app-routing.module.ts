@@ -1,3 +1,4 @@
+import { MyApplicationsComponent } from './my-applications/my-applications.component';
 import { LandingComponent } from './landing/landing.component';
 import { JobListComponent } from './job-list/job-list.component';
 import { IsJobOwnerGuard } from './guards/is-job-owner.guard';
@@ -75,7 +76,7 @@ const routes: Routes = [
   },
   {
     path: 'job-applications',
-    component: RegisterComponent,
+    component: MyApplicationsComponent,
   },
   {
     path: '',
