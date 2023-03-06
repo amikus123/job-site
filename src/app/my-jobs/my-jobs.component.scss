@@ -18,6 +18,14 @@ mat-card {
   table {
     border-bottom: 1px solid #e0e0e0;
     min-width: max-content;
+    td {
+      max-width: 33vw;
+    }
+    tr {
+      :last-child {
+        max-width: unset;
+      }
+    }
   }
   .wrap {
     overflow-x: auto;
