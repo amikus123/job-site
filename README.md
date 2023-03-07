@@ -13,15 +13,17 @@
 
 ## General info
 
-This is a simple project I made to practice angular. I implemented authorization with 2 roles, CRUD operations. Users can add jobs, apply for them and see how many people applied for their jobs. Users can login with email or using Google.
+This is a simple project I made to practice Angular. I implemented authorization with 2 roles, CRUD operations. Users can add jobs, apply for them and see how many people applied for their jobs. Users can login with email or using Google.
 
 ![image](https://user-images.githubusercontent.com/51713265/223383402-bc84c7df-09ba-4952-bb11-0add75d91257.png)
-![image](https://user-images.githubusercontent.com/51713265/223383653-0351d948-6d24-4114-8f6c-415698591c2e.png)
-![image](https://user-images.githubusercontent.com/51713265/223383725-2c99e5d7-762b-4f42-bf70-09eb7914be02.png)
+
 
 ## Hosting
 
 This page can be seen live [here](https://job-site-dc6be.web.app/)
+
+![image](https://user-images.githubusercontent.com/51713265/223383653-0351d948-6d24-4114-8f6c-415698591c2e.png)
+![image](https://user-images.githubusercontent.com/51713265/223383725-2c99e5d7-762b-4f42-bf70-09eb7914be02.png)
 
 ## Technologies
 
