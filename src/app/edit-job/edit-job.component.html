@@ -1,0 +1,13 @@
+<mat-card class="card card-form">
+  <mat-card-header>
+    <mat-card-title>Edit job</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <ng-container *ngIf="jobData$; else loading">
+      <app-job-form #formComponent [form]="form" [submit]="submit">
+      </app-job-form>
+    </ng-container>
+    <ng-template #loading></ng-template>
+  </mat-card-content>
+</mat-card>

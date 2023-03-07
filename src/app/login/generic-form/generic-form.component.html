@@ -1,7 +1,7 @@
-<mat-card class="card">
-  <mat-card-header class="form-card-header">
+<mat-card class="card card-form">
+  <mat-card-header>
     <mat-card-title>{{ isLogin ? "Login" : "Register" }} </mat-card-title>
-    <mat-card-subtitle
+    <mat-card-subtitle class="mat-subtitle-1"
       >Click
       <a [routerLink]="[!isLogin ? '/login' : '/register']">here</a>
       to {{ !isLogin ? "login" : "register" }}.
@@ -10,31 +10,37 @@
 
   <mat-card-content>
     <form class="form" [formGroup]="form" (submit)="submit()">
-      <mat-form-field class="full-width">
+      <mat-form-field>
         <mat-label>Email</mat-label>
-        <input matInput type="email" formControlName="email" />
+        <input
+          matInput
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+        />
         <mat-error *ngIf="form.controls.email.errors"
           >{{ getError(form.controls.email) }}
         </mat-error>
       </mat-form-field>
 
       <ng-container *ngIf="!isLogin">
-        <mat-form-field class="full-width">
+        <mat-form-field>
           <mat-label>Username</mat-label>
-          <input matInput formControlName="username" />
+          <input matInput formControlName="username" autocomplete="username" />
           <mat-error *ngIf="form.controls.email.errors"
             >{{ getError(form.controls.username) }}
           </mat-error>
         </mat-form-field>
       </ng-container>
 
-      <mat-form-field class="full-width">
+      <mat-form-field>
         <mat-label>Password</mat-label>
         <input
           name="password"
           formControlName="password"
           [type]="passwordMode ? 'password' : 'text'"
           matInput
+          autocomplete="current-password"
         />
         <mat-error *ngIf="form.controls.password.errors"
           >{{ getError(form.controls.password) }}
@@ -54,7 +60,7 @@
 
       <ng-container *ngIf="!isLogin">
         <div class="radio-container">
-          <label>Are you an employer? </label>
+          <label class="mat-subtitle-1">Are you an employer*? </label>
           <mat-radio-group formControlName="isEmployer">
             <mat-radio-button value="false">No</mat-radio-button>
             <mat-radio-button value="true">Yes</mat-radio-button>
@@ -62,7 +68,7 @@
         </div>
       </ng-container>
 
-      <div class="bottom-row">
+      <div class="button-row">
         <button
           mat-raised-button
           type="submit"

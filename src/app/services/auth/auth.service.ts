@@ -1,56 +1,50 @@
-import { map, Observable, Subscription } from 'rxjs';
+import { FirestoreService } from './../firestore/firestore.service';
+import { BehaviorSubject } from 'rxjs';
 import firebase from 'firebase/compat/app';
-import { User, Employee, Employer } from './auth';
+import { User, Employee, Employer } from '../types';
 import { Injectable } from '@angular/core';
 import * as auth from 'firebase/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import {
-  Action,
-  AngularFirestore,
-  AngularFirestoreDocument,
-  DocumentSnapshot,
-} from '@angular/fire/compat/firestore';
-import { Router } from '@angular/router';
-import { take } from 'rxjs/operators';
 
-interface CustomFirebaseUser extends firebase.User {
-  isEmployer: boolean;
-}
+import { Router, ActivatedRoute } from '@angular/router';
+import { LocalStorageService } from '../localStorage/local-storage.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  // firebase object
-  firebaseUser: CustomFirebaseUser | null = null;
   // user from db
-  user$: Observable<Employer | Employee | undefined> | null = null;
-
+  user$: BehaviorSubject<Employer | Employee | undefined | null>;
   constructor(
-    private firestore: AngularFirestore,
     private fireAuth: AngularFireAuth,
-    private router: Router
+    private firestoreService: FirestoreService,
+    private localStorageService: LocalStorageService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {
+    this.user$ = this.firestoreService.user$;
     // read local store
     this.fireAuth.authState.subscribe(async (user) => {
       if (user) {
-        this.user$ = this.getUserData$(user.uid);
+        this.firestoreService.setUserDataWithUID$(user.uid);
       }
     });
   }
 
-  async setUserLocalData(user: firebase.User | null, isEmployerLogin: boolean) {
-    if (user) {
-      const customUser = { ...user, isEmployer: isEmployerLogin };
-      this.firebaseUser = customUser;
-      localStorage.setItem('user', JSON.stringify(customUser));
-      this.user$ = await this.getUserData$(user.uid);
-    } else {
-      localStorage.setItem('user', 'null');
-    }
-    JSON.parse(localStorage.getItem('user')!);
-    this.router.navigate(['']);
-    window.location.reload();
+  async setUserLocalData(
+    user: firebase.User | null,
+    isEmployerLogin: boolean,
+    usernamse?: string
+  ) {
+    this.firestoreService
+      .setUserDataDuringLogin(user, isEmployerLogin, usernamse)
+      .then(() => {
+        if (isEmployerLogin) {
+          this.router.navigate(['/add-job']);
+        } else {
+          this.router.navigate(['/job-list']);
+        }
+      });
   }
 
   async signUp(
@@ -64,34 +58,21 @@ export class AuthService {
         email,
         password
       );
-      this.setUserData(user as firebase.User, isEmployerLogin, username).then(
-        () => {
-          this.setUserLocalData(user, isEmployerLogin);
-        }
+      await this.firestoreService.setUserDataDuringLogin(
+        user as firebase.User,
+        isEmployerLogin,
+        username
       );
+      if (isEmployerLogin) {
+        this.router.navigate(['/add-job']);
+      } else {
+        this.router.navigate(['/job-list']);
+      }
       return null;
     } catch (error: any) {
       console.error(error);
       return error.code as string;
     }
-  }
-
-  async getUserData(uid: string) {
-    const doc = await this.firestore.doc<User>(`users/${uid}`).ref.get();
-    return doc.data();
-  }
-  getUserData$(uid: string) {
-    return this.firestore
-      .doc<Employer | Employee>(`users/${uid}`)
-      .snapshotChanges()
-      .pipe(
-        map((res) => {
-          console.log(res.payload.data());
-          return res.payload.data();
-        })
-      );
-
-    // return this.firestore.doc<Employer | Employee>(`users/${uid}`).get() as any;
   }
 
   async signIn(email: string, password: string) {
@@ -100,8 +81,9 @@ export class AuthService {
         email,
         password
       );
-      const userData = (await this.getUserData(user?.uid as string)) as User;
-      await this.setUserData(user as firebase.User, userData?.isEmployer);
+      const userData = (await this.firestoreService.getUserData(
+        user?.uid as string
+      )) as User;
       this.setUserLocalData(user, userData?.isEmployer);
       return null;
     } catch (error: any) {
@@ -111,26 +93,28 @@ export class AuthService {
   }
 
   async googleAuth(isEmployerLogin: boolean) {
-    const user = await this.authLogin(isEmployerLogin);
+    const user = await this.googleAuthLogin(isEmployerLogin);
     if (user) {
-      const userDBData = await this.getUserData(user.uid);
-      // if user is not present in db (first time login) we add him
-      if (userDBData === undefined) {
-        this.setUserData(user as firebase.User, isEmployerLogin);
-      }
-
+      await this.firestoreService.setUserDataIfMissing(user, isEmployerLogin);
       this.setUserLocalData(user, isEmployerLogin);
     } else {
       console.error('NO USER');
     }
   }
-  async authLogin(isEmployerLogin: boolean) {
+  async googleAuthLogin(isEmployerLogin: boolean) {
     try {
       const { user } = await this.fireAuth.signInWithPopup(
         new auth.GoogleAuthProvider()
       );
-      this.setUserData(user as firebase.User, isEmployerLogin);
-      this.router.navigate(['']);
+      await this.firestoreService.setUserDataDuringLogin(
+        user as firebase.User,
+        isEmployerLogin
+      );
+      if (isEmployerLogin) {
+        this.router.navigate(['/add-job']);
+      } else {
+        this.router.navigate(['/job-list']);
+      }
       return user;
     } catch (error) {
       console.error(error);
@@ -138,47 +122,49 @@ export class AuthService {
     }
   }
 
-  get isLoggedIn(): boolean {
-    const user: CustomFirebaseUser | null =
-      JSON.parse(localStorage.getItem('user') || '') || this.firebaseUser;
-    return !!user;
-  }
-  get isEmployee(): boolean {
-    const user: CustomFirebaseUser | null =
-      JSON.parse(localStorage.getItem('user') || '') || this.firebaseUser;
-    return !!user && !user?.isEmployer;
-  }
-  get isEmployer(): boolean {
-    const user: CustomFirebaseUser | null =
-      JSON.parse(localStorage.getItem('user') || '') || this.firebaseUser;
-    return user?.isEmployer || false;
-  }
-
-  async setUserData(
-    user: firebase.User,
-    isEmployerLogin: boolean,
-    username?: string
-  ) {
-    console.log(user, 'WWW');
-    const userRef: AngularFirestoreDocument<any> = this.firestore.doc(
-      `users/${user.uid}`
-    );
-    const userData: User = {
-      uid: user.uid,
-      email: user.email as string,
-      username: username ? username : (user.displayName as string),
-      photoURL: user.photoURL as string,
-      isEmployer: isEmployerLogin,
-    };
-    return await userRef.set(userData, {
-      merge: true,
+  async signOut() {
+    await this.fireAuth.signOut();
+    this.localStorageService.removeUser();
+    this.router.navigate(['']).then(() => {
+      window.location.reload();
     });
   }
 
-  // Sign out
-  async signOut() {
-    await this.fireAuth.signOut();
-    this.setUserLocalData(null, false);
-    this.router.navigate(['']);
+  get isLoggedIn(): boolean {
+    const localStorageUser =
+      this.localStorageService.getUserFromStorageAndParse();
+    if (localStorageUser === null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  reload() {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.router.onSameUrlNavigation = 'reload';
+    this.router.navigate(['./'], { relativeTo: this.route });
+  }
+
+  get isEmployee(): boolean {
+    const localStorageUser =
+      this.localStorageService.getUserFromStorageAndParse();
+    console.log(localStorageUser, !localStorageUser?.isEmployer, 'isEmployee');
+
+    if (localStorageUser === null) {
+      return false;
+    } else {
+      return !localStorageUser?.isEmployer;
+    }
+  }
+  get isEmployer(): boolean {
+    const localStorageUser =
+      this.localStorageService.getUserFromStorageAndParse();
+    console.log(localStorageUser, !!localStorageUser?.isEmployer, 'isEmployer');
+    if (localStorageUser === null) {
+      return false;
+    } else {
+      return !!localStorageUser?.isEmployer;
+    }
   }
 }

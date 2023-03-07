@@ -1,3 +1,5 @@
+// user stored in db
+import firebase from 'firebase/compat/app';
 export interface User {
   uid: string;
   email: string;
@@ -19,4 +21,8 @@ export const errorCodes = {
   'auth/email-already-exists': 'Email is already in use',
   'auth/user-not-found': 'User not found',
   'auth/wrong-password': 'Wrong password',
+  'auth/email-already-in-use': 'Email is already in use',
 };
+export interface CustomFirebaseUser extends firebase.User {
+  isEmployer: boolean;
+}

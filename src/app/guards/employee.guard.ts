@@ -22,19 +22,6 @@ export class EmployeeGuard {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-
-    return this.auth.user$ === null? false : this.auth.user$.pipe(
-      map(e => {
-        if (e) {
-          return true;
-        } else {
-          ...
-        }
-      }),
-      catchError((err) => {
-        this.router.navigate(['/login']);
-        return of(false);
-      })
-    );
+    return this.auth.isEmployee;
   }
 }

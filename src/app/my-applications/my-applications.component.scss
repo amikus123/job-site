@@ -1,0 +1,23 @@
+.margin-right {
+  margin-right: 1rem;
+}
+.wrap {
+  min-height: 100vh;
+  margin: 1rem;
+  overflow: hidden;
+  mat-card-title {
+    margin-bottom: 1rem;
+  }
+  mat-spinner {
+    margin: 1rem auto 2rem;
+  }
+  ul {
+    list-style: none;
+  }
+}
+@media screen and (max-width: 560px) {
+  ul {
+    margin: 0;
+    padding-inline: 16px;
+  }
+}

@@ -2,6 +2,12 @@
 
 <app-navbar/>
 <main>
+  <div class="loading-wrap" *ngIf="loading"> 
+
+    <mat-spinner></mat-spinner>
+
+  </div>
   <router-outlet/>
+
 </main>
 <app-footer/>

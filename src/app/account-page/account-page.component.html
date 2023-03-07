@@ -1,81 +1,64 @@
-<mat-card class="card">
+<mat-card class="card card-form">
   <mat-card-header>
     <mat-card-title>Account settings</mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
     <div *ngIf="auth.user$ | async as user; else loading">
-      {{ user | json }}
+      <p class="mat-subtitle-1">Username: {{ user.username }}</p>
+      <p class="mat-subtitle-1">
+        Status: {{ user.isEmployer ? "employer" : "employee" }}
+      </p>
+      <p class="mat-subtitle-1">Email: {{ user.email }}</p>
     </div>
-    <ng-template #loading>Loading...</ng-template>
 
-    <!-- <form class="form" [formGroup]="form" (submit)="submit()">
-      <mat-form-field class="full-width">
-        <mat-label>Email</mat-label>
-        <input matInput type="email" formControlName="email" />
-        <mat-error *ngIf="form.controls.email.errors"
-          >{{ getError(form.controls.email) }}
+    <ng-template #loading>
+      <mat-spinner class="loading-margin"></mat-spinner
+    ></ng-template>
+    <p class="mat-headline-6">Edit your account:</p>
+
+    <form class="form" [formGroup]="form" (submit)="saveChanges()">
+      <mat-form-field>
+        <mat-label class="mat-subtitle-1">Username</mat-label>
+        <input matInput type="email" formControlName="username" />
+        <mat-error *ngIf="form.controls.username.errors"
+          >{{ getError(form.controls.username) }}
         </mat-error>
       </mat-form-field>
 
-      <ng-container *ngIf="!isLogin">
-        <mat-form-field class="full-width">
-          <mat-label>Username</mat-label>
-          <input matInput formControlName="username" />
-          <mat-error *ngIf="form.controls.email.errors"
-            >{{ getError(form.controls.username) }}
-          </mat-error>
-        </mat-form-field>
-      </ng-container>
+      <div class="radio-container">
+        <label class="mat-subtitle-1">Are you an employer? </label>
+        <mat-radio-group formControlName="isEmployer">
+          <mat-radio-button value="false">No</mat-radio-button>
+          <mat-radio-button value="true">Yes</mat-radio-button>
+        </mat-radio-group>
+      </div>
 
-      <mat-form-field class="full-width">
-        <mat-label>Password</mat-label>
-        <input
-          name="password"
-          formControlName="password"
-          [type]="passwordMode ? 'password' : 'text'"
-          matInput
-        />
-        <mat-error *ngIf="form.controls.password.errors"
-          >{{ getError(form.controls.password) }}
-        </mat-error>
-        <button
-          matSuffix
-          mat-icon-button
-          aria-label="Toggle password visibility"
-          (click)="togglePassword()"
-        >
-          <mat-icon>{{
-            passwordMode ? "visibility" : "visibility_off"
-          }}</mat-icon>
-        </button>
-      </mat-form-field>
-
-      <ng-container *ngIf="!isLogin">
-        <div class="radio-container">
-          <label>Are you an employer? </label>
-          <mat-radio-group formControlName="isEmployer">
-            <mat-radio-button value="false">No</mat-radio-button>
-            <mat-radio-button value="true">Yes</mat-radio-button>
-          </mat-radio-group>
-        </div>
-      </ng-container>
-
-      <div class="bottom-row">
+      <div class="button-row">
         <button
           mat-raised-button
           type="submit"
-          [disabled]="!form.valid"
+          is
+          disabled
+          if
+          values
+          are
+          the
+          same
+          as
+          current
+          user
+          [disabled]="
+            !form.valid ||
+            ((auth.user$ | async)?.username === form.controls.username.value &&
+              (auth.user$ | async)?.isEmployer ===
+                (form.controls.isEmployer.value === 'true' ? true : false))
+          "
           color="primary"
         >
-          {{ isLogin ? "Login" : "Register" }}
-        </button>
-
-        <button mat-raised-button type="button" (click)="googleLogin()">
-          <mat-icon> login </mat-icon>
-          Google login
+          Save changes
         </button>
       </div>
-    </form> -->
+    </form>
   </mat-card-content>
 </mat-card>

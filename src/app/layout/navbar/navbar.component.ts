@@ -20,15 +20,13 @@ export class NavbarComponent {
   links: Link[] = [{ href: '/job-list', text: 'Jobs', icon: 'work' }];
   employerLinks: Link[] = [
     { href: '/add-job', text: 'Add job', icon: 'playlist_add' },
-    { href: '/add-job', text: 'Your jobs', icon: 'list' },
+    { href: '/my-jobs', text: 'Your jobs', icon: 'list' },
   ];
   employeeLinks: Link[] = [
     { href: '/job-applications', text: 'Your applications', icon: 'list' },
   ];
-  constructor(private auth: AuthService) {}
+  constructor(public auth: AuthService) {}
   isLoggedIn = this.auth.isLoggedIn;
-  isEmployee = this.auth.isEmployee;
-  isEmployer = this.auth.isEmployer;
 
   signOut() {
     console.log('!!!');

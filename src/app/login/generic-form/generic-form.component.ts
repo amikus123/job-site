@@ -7,6 +7,7 @@ import {
   FormGroup,
   ValidationErrors,
 } from '@angular/forms';
+import { getErrorFromForm } from 'src/app/utils/forms';
 
 @Component({
   selector: 'app-generic-form',
@@ -34,21 +35,7 @@ export class GenericLoginComponent {
   togglePassword() {
     this.passwordMode = !this.passwordMode;
   }
-  // gets one of the field errors to display
   getError(formControl: FormControl<string>) {
-    const errors = formControl.errors as ValidationErrors;
-    const firstError = Object.entries(errors)[0];
-    console.log(firstError);
-    if (firstError[0] === 'firebaseError') {
-      return firstError[1];
-    } else if (firstError[0] === 'required') {
-      return 'Field is required';
-    } else if (firstError[0] === 'minlength') {
-      return `Field should be at least ${firstError[1].requiredLength} characters long`;
-    } else if (firstError[0] === 'email') {
-      return 'Enter valid email';
-    } else {
-      return 'idk';
-    }
+    return getErrorFromForm(formControl);
   }
 }

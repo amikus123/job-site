@@ -1,0 +1,69 @@
+<ng-container *ngIf="form">
+  <form
+    class="form"
+    #formDirective="ngForm"
+    [formGroup]="form"
+    (submit)="submit()"
+  >
+    <mat-form-field>
+      <mat-label class="mat-subtitle-1">Job title</mat-label>
+      <input matInput formControlName="jobTitle" />
+      <mat-error *ngIf="form.controls.jobTitle.errors"
+        >{{ getError(form.controls.jobTitle) }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label class="mat-subtitle-1">Salary</mat-label>
+      <input matInput type="number" formControlName="salary" />
+      <mat-error *ngIf="form.controls.salary.errors"
+        >{{ getError(form.controls.salary) }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label class="mat-subtitle-1">Currency</mat-label>
+      <mat-select formControlName="currency">
+        <mat-option value="zl">zl</mat-option>
+        <mat-option value="$">$</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label class="mat-subtitle-1">Job description</mat-label>
+
+      <textarea matInput formControlName="jobDescription"></textarea>
+
+      <mat-error *ngIf="form.controls.jobDescription.errors"
+        >{{ getError(form.controls.jobDescription) }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label class="mat-subtitle-1">Location</mat-label>
+      <input matInput formControlName="location" />
+      <mat-error *ngIf="form.controls.location.errors"
+        >{{ getError(form.controls.location) }}
+      </mat-error>
+    </mat-form-field>
+
+    <div class="radio-container">
+      <label class="mat-subtitle-1">Salary type*: </label>
+      <mat-radio-group formControlName="salaryType">
+        <mat-radio-button value="brutto">Brutto</mat-radio-button>
+        <mat-radio-button value="netto">Netto</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <div class="button-row">
+      <button
+        mat-raised-button
+        type="submit"
+        [disabled]="!form.valid"
+        color="primary"
+      >
+        Save changes
+      </button>
+    </div>
+  </form>
+</ng-container>

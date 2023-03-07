@@ -1,3 +1,4 @@
+import { JobCardComponent } from './job-card/job-card.component';
 import { FooterComponent } from './layout/footer/footer.component';
 import { NavbarComponent } from './layout/navbar/navbar.component';
 import { CommonModule } from '@angular/common';
@@ -14,6 +15,7 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PERSISTENCE } from '@angular/fire/compat/auth';
 import { BrowserModule } from '@angular/platform-browser';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [AppComponent, TestComponent],
@@ -28,6 +30,7 @@ import { BrowserModule } from '@angular/platform-browser';
     AppRoutingModule,
     NavbarComponent,
     FooterComponent,
+    MatProgressSpinnerModule,
   ],
   providers: [
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
