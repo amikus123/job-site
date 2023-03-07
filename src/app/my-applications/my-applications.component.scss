@@ -15,3 +15,9 @@
     list-style: none;
   }
 }
+@media screen and (max-width: 560px) {
+  ul {
+    margin: 0;
+    padding-inline: 16px;
+  }
+}

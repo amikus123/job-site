@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import * as auth from 'firebase/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { LocalStorageService } from '../localStorage/local-storage.service';
 
 @Injectable({
@@ -19,7 +19,8 @@ export class AuthService {
     private fireAuth: AngularFireAuth,
     private firestoreService: FirestoreService,
     private localStorageService: LocalStorageService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.user$ = this.firestoreService.user$;
     // read local store
@@ -124,7 +125,9 @@ export class AuthService {
   async signOut() {
     await this.fireAuth.signOut();
     this.localStorageService.removeUser();
-    this.router.navigate(['']);
+    this.router.navigate(['']).then(() => {
+      window.location.reload();
+    });
   }
 
   get isLoggedIn(): boolean {
@@ -136,6 +139,13 @@ export class AuthService {
       return true;
     }
   }
+
+  reload() {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.router.onSameUrlNavigation = 'reload';
+    this.router.navigate(['./'], { relativeTo: this.route });
+  }
+
   get isEmployee(): boolean {
     const localStorageUser =
       this.localStorageService.getUserFromStorageAndParse();
