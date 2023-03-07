@@ -1,3 +1,4 @@
+import { FilterPipe } from './../filter.pipe';
 import { BehaviorSubject, of } from 'rxjs';
 import { ToastService } from './../services/toast/toast.service';
 import { AuthService } from './../services/auth/auth.service';
@@ -19,13 +20,16 @@ export class JobCardComponent {
   @Input('job') job?: JobOffer;
   @Input('user') user?: User | null;
   @Input('users') users?: User[];
+  @Input('showApplications') showApplications?: boolean;
   hasClicked = false;
   constructor(
     public firestore: FirestoreService,
     private toastService: ToastService
   ) {}
 
-  async ngOnInit() {}
+  async ngOnInit() {
+    console.log({ a: this.showApplications });
+  }
   async click(jobId: string | undefined) {
     if (!this.user) {
       this.toastService.openToast('You are not logged in!');

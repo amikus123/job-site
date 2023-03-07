@@ -12,7 +12,12 @@
     <form class="form" [formGroup]="form" (submit)="submit()">
       <mat-form-field>
         <mat-label>Email</mat-label>
-        <input matInput type="email" formControlName="email" />
+        <input
+          matInput
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+        />
         <mat-error *ngIf="form.controls.email.errors"
           >{{ getError(form.controls.email) }}
         </mat-error>
@@ -21,7 +26,7 @@
       <ng-container *ngIf="!isLogin">
         <mat-form-field>
           <mat-label>Username</mat-label>
-          <input matInput formControlName="username" />
+          <input matInput formControlName="username" autocomplete="username" />
           <mat-error *ngIf="form.controls.email.errors"
             >{{ getError(form.controls.username) }}
           </mat-error>
@@ -35,6 +40,7 @@
           formControlName="password"
           [type]="passwordMode ? 'password' : 'text'"
           matInput
+          autocomplete="current-password"
         />
         <mat-error *ngIf="form.controls.password.errors"
           >{{ getError(form.controls.password) }}

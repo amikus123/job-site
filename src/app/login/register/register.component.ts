@@ -54,6 +54,7 @@ export class RegisterComponent {
       formValues.password || '',
       formValues.username || ''
     );
+    console.log({ errorCode });
     if (errorCode !== null) {
       setErrors(errorCode, this.form.controls);
     }

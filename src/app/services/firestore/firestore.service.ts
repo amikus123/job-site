@@ -146,4 +146,13 @@ export class FirestoreService {
     const joinedData = zip(appliedJobs, users);
     return joinedData;
   }
+
+  getJobForPage(jobId: string) {
+    const job = this.firestore
+      .doc<JobOffer>(`jobOffers/${jobId}`)
+      .valueChanges() as Observable<JobOffer>;
+    const users = this.firestore.collection<User>('users').valueChanges();
+    const joinedData = zip(job, users);
+    return joinedData;
+  }
 }

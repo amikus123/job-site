@@ -38,8 +38,11 @@ export class AuthService {
     this.firestoreService
       .setUserDataDuringLogin(user, isEmployerLogin, usernamse)
       .then(() => {
-        this.router.navigate(['']);
-        window.location.reload();
+        if (isEmployerLogin) {
+          this.router.navigate(['/add-job']);
+        } else {
+          this.router.navigate(['/job-list']);
+        }
       });
   }
 
@@ -59,8 +62,11 @@ export class AuthService {
         isEmployerLogin,
         username
       );
-      this.router.navigate(['']);
-      window.location.reload();
+      if (isEmployerLogin) {
+        this.router.navigate(['/add-job']);
+      } else {
+        this.router.navigate(['/job-list']);
+      }
       return null;
     } catch (error: any) {
       console.error(error);
@@ -103,8 +109,11 @@ export class AuthService {
         user as firebase.User,
         isEmployerLogin
       );
-      this.router.navigate(['']);
-      window.location.reload();
+      if (isEmployerLogin) {
+        this.router.navigate(['/add-job']);
+      } else {
+        this.router.navigate(['/job-list']);
+      }
       return user;
     } catch (error) {
       console.error(error);
@@ -116,7 +125,6 @@ export class AuthService {
     await this.fireAuth.signOut();
     this.localStorageService.removeUser();
     this.router.navigate(['']);
-    window.location.reload();
   }
 
   get isLoggedIn(): boolean {

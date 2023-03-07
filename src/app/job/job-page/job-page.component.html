@@ -1,1 +1,21 @@
-<p>job-page works!</p>
+<mat-card class="wrap">
+  <mat-card-header>
+    <mat-card-title>Job Offer</mat-card-title>
+  </mat-card-header>
+
+  <div *ngIf="data$ | async as joinedDataArr; else loading">
+    <ul>
+      <app-job-card
+        [user]="user"
+        [job]="joinedDataArr[0]"
+        [users]="joinedDataArr[1]"
+        [showApplications]="true"
+      >
+      </app-job-card>
+    </ul>
+  </div>
+
+  <ng-template #loading>
+    <mat-spinner></mat-spinner>
+  </ng-template>
+</mat-card>

@@ -8,8 +8,6 @@
         {{ (users | filter : job.authorUid || "").username }}
       </mat-card-subtitle>
 
-      <mat-card-subtitle>Added by: </mat-card-subtitle>
-
       <mat-card-subtitle
         >Salary:
         {{ job.salary + " " + job.currency + " " + job.salaryType }}
@@ -25,28 +23,42 @@
         {{ job.jobDescription }}
       </p>
     </mat-card-content>
-    <mat-card-actions>
-      <button disabled mat-button *ngIf="user?.isEmployer; else employee">
-        Employers can't apply
-      </button>
 
-      <ng-template #employee>
-        <button
-          *ngIf="
-            this.user &&
-              !job.applications?.includes(this.user?.uid || '') &&
-              !hasClicked;
-            else disabled
-          "
-          (click)="click(job.id)"
-          mat-button
-        >
-          Apply
+    <div *ngIf="showApplications; else employer">
+      <mat-card-content>
+        Users who applied:
+        <ul>
+          <li *ngFor="let uid of job.applications">
+            {{ (users | filter : uid || "").username }}
+          </li>
+        </ul>
+      </mat-card-content>
+    </div>
+
+    <ng-template #employer>
+      <mat-card-actions>
+        <button *ngIf="user?.isEmployer; else employee" disabled mat-button>
+          Employers can't apply
         </button>
-        <ng-template #disabled>
-          <button disabled mat-button>You have already applied</button>
+
+        <ng-template #employee>
+          <button
+            *ngIf="
+              this.user &&
+                !job.applications?.includes(this.user?.uid || '') &&
+                !hasClicked;
+              else disabled
+            "
+            (click)="click(job.id)"
+            mat-button
+          >
+            Apply
+          </button>
+          <ng-template #disabled>
+            <button disabled mat-button>You have already applied</button>
+          </ng-template>
         </ng-template>
-      </ng-template>
-    </mat-card-actions>
+      </mat-card-actions>
+    </ng-template>
   </mat-card>
 </li>

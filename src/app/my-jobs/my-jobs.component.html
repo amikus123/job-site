@@ -49,14 +49,6 @@
           <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let element">
             <a
-              [routerLink]="['/view-job-applications', element.id]"
-              class="margin-right"
-              mat-raised-button
-            >
-              View applications
-            </a>
-
-            <a
               [routerLink]="['/edit-job', element.id]"
               class="margin-right"
               mat-raised-button
